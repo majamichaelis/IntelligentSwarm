@@ -6,6 +6,7 @@ public class FishAgent : MonoBehaviour
 {
     public SwarmManager swarmManager;
     private float speed;
+    bool turning = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,18 +16,38 @@ public class FishAgent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-         * zufällige Geschwindigkeit
-        if(Random.Range(0,100) < 10)
+        //kann noch geändert werden
+        Bounds bounds = new Bounds(swarmManager.transform.position, swarmManager.swimLimits);
+
+        if (!bounds.Contains(transform.position))
         {
-            speed = Random.Range(swarmManager.minSpeed, swarmManager.maxSpeed);
+            turning = true;
         }
-        //zufällig nicht immer die Regeln beachten
-        if(Random.Range(0,100) < 20)
+        else
         {
-            ApplyRules();
+            turning = false;
         }
-        */
+
+        if (turning)
+        {
+            Vector3 direction = swarmManager.transform.position - transform.position;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), swarmManager.rotationSpeed * Time.deltaTime);
+        }
+        else
+        {
+            /*
+             * zufällige Geschwindigkeit
+            if(Random.Range(0,100) < 10)
+            {
+                speed = Random.Range(swarmManager.minSpeed, swarmManager.maxSpeed);
+            }
+            //zufällig nicht immer die Regeln beachten
+            if(Random.Range(0,100) < 20)
+            {
+                ApplyRules();
+            }
+            */
+        }
         ApplyRules();
         transform.Translate(0, 0, Time.deltaTime * speed);
     }
