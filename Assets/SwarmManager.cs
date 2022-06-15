@@ -7,7 +7,7 @@ public class SwarmManager : MonoBehaviour
     public GameObject fishprefab;
     public int numFish = 20;
     public GameObject[] allfish;
-    public Vector3 swimLimits = new Vector3(5, 5, 5);
+    public Vector3 swimLimits = new Vector3(3, 3, 3);
     public Vector3 goalPos;
 
     [Range(0.0f, 5.0f)]
@@ -40,6 +40,9 @@ public class SwarmManager : MonoBehaviour
     void Update()
     {
         if(Random.Range(0,100) < 10)
-        goalPos = this.transform.position + new Vector3(Random.Range(-swimLimits.x, swimLimits.x), Random.Range(-swimLimits.y, swimLimits.y), Random.Range(-swimLimits.z, swimLimits.z));
+        {
+
+        }
+        //goalPos = this.transform.position + new Vector3(Random.Range(-swimLimits.x, swimLimits.x), Random.Range(-swimLimits.y, swimLimits.y), Random.Range(-swimLimits.z, swimLimits.z));
     }
 }

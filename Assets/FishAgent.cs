@@ -19,6 +19,13 @@ public class FishAgent : MonoBehaviour
         //kann noch geändert werden
         Bounds bounds = new Bounds(swarmManager.transform.position, swarmManager.swimLimits);
 
+        RaycastHit hit;
+        Physics.Raycast(transform.position, this.transform.forward * 50, out hit);
+        Debug.DrawRay(this.transform.position, this.transform.forward * 50, Color.red);
+        
+
+
+
         if (!bounds.Contains(transform.position))
         {
             turning = true;
@@ -27,7 +34,6 @@ public class FishAgent : MonoBehaviour
         {
             turning = false;
         }
-
         if (turning)
         {
             Vector3 direction = swarmManager.transform.position - transform.position;
@@ -35,6 +41,7 @@ public class FishAgent : MonoBehaviour
         }
         else
         {
+            // Vector3.Reflect(this.transform.forward, hit.normal);
             /*
              * zufällige Geschwindigkeit
             if(Random.Range(0,100) < 10)
@@ -48,6 +55,7 @@ public class FishAgent : MonoBehaviour
             }
             */
         }
+
         ApplyRules();
         transform.Translate(0, 0, Time.deltaTime * speed);
     }
@@ -97,8 +105,6 @@ public class FishAgent : MonoBehaviour
             //schon Richtige Richtung 
             if (direction != Vector3.zero)
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), swarmManager.rotationSpeed * Time.deltaTime);
-
-
         }
     }
 }
