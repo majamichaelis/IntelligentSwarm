@@ -15,6 +15,18 @@ public class FishAgent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
+         * zufällige Geschwindigkeit
+        if(Random.Range(0,100) < 10)
+        {
+            speed = Random.Range(swarmManager.minSpeed, swarmManager.maxSpeed);
+        }
+        //zufällig nicht immer die Regeln beachten
+        if(Random.Range(0,100) < 20)
+        {
+            ApplyRules();
+        }
+        */
         ApplyRules();
         transform.Translate(0, 0, Time.deltaTime * speed);
     }
@@ -56,7 +68,7 @@ public class FishAgent : MonoBehaviour
         }
         if (groupSize > 0)
         {
-            vcentre = vcentre/groupSize;
+            vcentre = vcentre/groupSize + (swarmManager.goalPos - this.transform.position);
             speed = gSpeed/groupSize;
 
             Vector3 direction = (vcentre + vavoid)-transform.position;
