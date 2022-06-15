@@ -15,8 +15,8 @@ public class FishAgent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(0, 0, Time.deltaTime * speed);
         ApplyRules();
+        transform.Translate(0, 0, Time.deltaTime * speed);
     }
 
     private void ApplyRules()
@@ -56,10 +56,10 @@ public class FishAgent : MonoBehaviour
         }
         if (groupSize > 0)
         {
-            vcentre = vcentre / groupSize;
-            speed = gSpeed / groupSize;
+            vcentre = vcentre/groupSize;
+            speed = gSpeed/groupSize;
 
-            Vector3 direction = (vcentre + vavoid) - transform.position;
+            Vector3 direction = (vcentre + vavoid)-transform.position;
 
             //schon Richtige Richtung 
             if (direction != Vector3.zero)

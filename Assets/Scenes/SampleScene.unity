@@ -246,14 +246,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fishprefab: {fileID: 4882801322305221464, guid: c87fa0d6180121d42a09aff518a98e33, type: 3}
-  numFish: 20
+  numFish: 50
   allfish: []
-  swimLimits: {x: 20, y: 20, z: 20}
+  swimLimits: {x: 10, y: 10, z: 10}
   minSpeed: 2.03
   maxSpeed: 3.6
   neighbourDistance: 10.91
-  rotationSpeed: 2.85
-  AvoidValue: 0
+  rotationSpeed: 0.12
+  AvoidValue: 1
 --- !u!4 &741240750
 Transform:
   m_ObjectHideFlags: 0
