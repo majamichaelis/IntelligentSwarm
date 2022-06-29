@@ -5,7 +5,6 @@ using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Jobs;
 
-[BurstCompile]
 public struct JobFishAgent : IJobParallelForTransform
 {
     [ReadOnly] public float swarmManagerRotationSpeed;
