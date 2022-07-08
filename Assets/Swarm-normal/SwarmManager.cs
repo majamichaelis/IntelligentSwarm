@@ -12,7 +12,7 @@ public class SwarmManager : MonoBehaviour
     [HideInInspector]
     public GameObject[] allfish;
     public List<Collider> Obstacles;
-    [HideInInspector] public Bounds[] _bounds;
+    [HideInInspector] public Bounds[] bounds;
     public Vector3 swimLimits = new Vector3(3, 3, 3);
 
     [HideInInspector]
@@ -24,7 +24,7 @@ public class SwarmManager : MonoBehaviour
     public float maxSpeed;
     [Range(0.0f, 20.0f)]
     public float neighbourDistance;
-    [Range(0.0f, 5.0f)]
+    [Range(0.1f, 5.0f)]
     public float rotationSpeed;
     [Range(0.1f, 5.0f)]
     public float AvoidValue;
@@ -40,7 +40,7 @@ public class SwarmManager : MonoBehaviour
             allfish[i].GetComponent<FishAgent>().swarmManager = this;
         }
         goalPos = goalObject.transform.position;
-        _bounds = getBoundsArray(Obstacles);
+        bounds = getBoundsArray(Obstacles);
     }
 
     // Update is called once per frame
@@ -60,13 +60,9 @@ public class SwarmManager : MonoBehaviour
     {
         Bounds [] boundsArray = new Bounds[Obstacles.Count];
 
-        foreach (Collider obstacleCollider in obstacles)
+        for (int i = 0; i < boundsArray.Length; i++)
         {
-            for (int i = 0; i < boundsArray.Length; i++)
-            {
-                boundsArray[i] = obstacleCollider.bounds;
-                //Debug.LogError(obstacleCollider.bounds.center);
-            }
+              boundsArray[i] = obstacles[i].bounds;
         }
         return boundsArray;
     }

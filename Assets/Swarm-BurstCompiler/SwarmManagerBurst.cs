@@ -146,14 +146,10 @@ public class SwarmManagerBurst : MonoBehaviour
     {
         NativeArray<Bounds> boundsArray = new NativeArray<Bounds>(Obstacles.Count, Allocator.TempJob);
 
-        foreach (Collider obstacleCollider in obstacles)
-        {
             for(int i = 0; i< boundsArray.Length; i++)
             {
-                boundsArray[i] = obstacleCollider.bounds;
-                Debug.LogError(obstacleCollider.bounds.center);
+                boundsArray[i] = obstacles[i].bounds;
             }
-        }
         return boundsArray;
     }
 }

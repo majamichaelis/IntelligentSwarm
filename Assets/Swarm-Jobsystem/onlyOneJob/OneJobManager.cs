@@ -8,6 +8,9 @@ using UnityEngine.Jobs;
 public class OneJobManager : MonoBehaviour
 {
     public GameObject fishprefab;
+    public GameObject goalGameobject;
+    public List<Collider> Obstacles;
+    private NativeArray<Bounds> boundsArray;
     public int numFish = 20;
     [HideInInspector]
     public GameObject[] allfish;
@@ -25,9 +28,9 @@ public class OneJobManager : MonoBehaviour
     public float maxSpeed;
     [Range(0.0f, 20.0f)]
     public float neighbourDistance;
-    [Range(0.0f, 5.0f)]
+    [Range(0.1f, 5.0f)]
     public float rotationSpeed;
-    [Range(1.0f, 5.0f)]
+    [Range(0.1f, 5.0f)]
     public float AvoidValue;
 
     TransformAccessArray transforms;
@@ -39,7 +42,7 @@ public class OneJobManager : MonoBehaviour
         jobHandle.Complete();
         transforms.Dispose();
         fishPositions.Dispose();
-        
+        boundsArray.Dispose();
     }
 
     //Schwarm bewegt sich nach der durchschnittlichen position, in die durchschnittliche Richtung, andere sollen nicht getroffen werden 
@@ -48,6 +51,7 @@ public class OneJobManager : MonoBehaviour
     void Start()
     {
         transforms = new TransformAccessArray(0, -1);
+        boundsArray = getColliderNativeArray(Obstacles);
 
         allfish = new GameObject[numFish];
         fishPositions = new NativeList<Vector3>(Allocator.TempJob);
@@ -60,21 +64,22 @@ public class OneJobManager : MonoBehaviour
             fishPositions.Add(allfish[i].transform.position);
             //allfishNative[i] = allfish[i].TryGetComponent<Transform>();
         }
-        goalPos = this.transform.position;
+        goalPos = goalGameobject.transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
+        goalPos = goalGameobject.transform.position;
         float time = Time.deltaTime;
         jobHandle.Complete();
         GetAllPositions();
-
+        /*
         if (Random.Range(0, 100) < 10)
         {
             goalPos = this.transform.position + new Vector3(Random.Range(-swimLimits.x, swimLimits.x), Random.Range(0, swimLimits.y), Random.Range(-swimLimits.z, swimLimits.z));
         }
-
+        */
         bool turnFish = false;
 
         foreach (GameObject fish in allfish)
@@ -97,16 +102,17 @@ public class OneJobManager : MonoBehaviour
             swarmManagerNeighbourDistance = neighbourDistance,
             swarmManagerGoalpos = goalPos,
 
+            bounds = boundsArray,
+
             speed = randomSpeed,
             turning = turnFish,
             positions = fishPositions,
             deltaTime = time
         };
         jobHandle = jobFishAgent.Schedule(transforms);
-       
-        JobHandle.ScheduleBatchedJobs();
 
-        
+        //JobHandle.CompleteAll(ref jobHandle);
+        jobHandle.Complete();
 
     }
     private void GetAllPositions()
@@ -118,5 +124,16 @@ public class OneJobManager : MonoBehaviour
             fishPositions.Add(allfish[i].transform.position);
         }
     }
-        
+
+    public NativeArray<Bounds> getColliderNativeArray(List<Collider> obstacles)
+    {
+        NativeArray<Bounds> boundsArray = new NativeArray<Bounds>(Obstacles.Count, Allocator.Persistent);
+
+        for (int i = 0; i < boundsArray.Length; i++)
+        {
+            boundsArray[i] = obstacles[i].bounds;
+        }
+        return boundsArray;
+    }
+
 }

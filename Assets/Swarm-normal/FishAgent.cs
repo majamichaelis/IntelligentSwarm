@@ -7,22 +7,22 @@ public class FishAgent : MonoBehaviour
     public SwarmManager swarmManager;
     private float speed;
     bool turning = false;
-    bool away = false;
-    private Vector3 direction;
+    //private Vector3 direction;
 
     // Start is called before the first frame update
     void Start()
     {
         speed = Random.Range(swarmManager.minSpeed, swarmManager.maxSpeed);
-        direction = Vector3.zero;
+        //direction = Vector3.zero;
     }
 
     // Update is called once per frame
     void Update()
     {
         //kann noch ge?ndert werden
-        Bounds bounds = new Bounds(swarmManager.transform.position, swarmManager.swimLimits);                                      
+        //Bounds bounds = new Bounds(swarmManager.transform.position, swarmManager.swimLimits);                                      
         /*
+         * 
         if (!bounds.Contains(transform.position))
         {
             turning = true;
@@ -37,50 +37,49 @@ public class FishAgent : MonoBehaviour
             direction = Vector3.Reflect(this.transform.forward, hit.normal);
 
         }*/
-        foreach (Bounds boundsObstacles in swarmManager._bounds)
+
+        for(int i=0;  i< swarmManager.bounds.Length; i++)
         {
             //Debug.Log(transform.position);
             //Debug.Log(boundsObstacles.center);
             //boundsObstacles.Expand(2f);
+            //Debug.Log(swarmManager.bounds[i].center);
+            Debug.Log(i);
 
-            if (boundsObstacles.Contains(transform.position))
+            if (swarmManager.bounds[i].Contains(transform.position))
             {
-                 
                 turning = true;
-                Debug.LogError(transform.position);
                 //direction = transform.position - boundsObstacles.center;
                 //direction = transform.position - swarmManager.goalPos;
-                //Debug.LogError("obstacle");
+                Debug.Log("hit");
+                break;
             }
             else
-            {
                 turning = false;
-            }
         }
+        /*
         if (turning)
         {
             //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(swarmManager.goalPos), swarmManager.rotationSpeed * Time.deltaTime);
             //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Inverse(transform.rotation) , speed * Time.deltaTime);
-            // transform.rotation = Quaternion.Inverse(transform.rotation);
+            //transform.rotation = Quaternion.Inverse(transform.rotation);
 
             //transform.Translate(0, 0, Time.deltaTime * speed);
             //transform.rotation = Quaternion.Euler(0f, 0f, -1f) * swarmManager.rotationSpeed*Time.deltaTime;
             //transform.rotation = Quaternion.EulerAngles(transform.rotation.x, transform.rotation.y, transform.rotation.z)
         }
         //else
+        */
+       ApplyRules();
 
-
-
-        ApplyRules();
-
-        if (turning)
-            transform.position = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, -1* (transform.position.z + 2f)), Time.deltaTime* swarmManager.maxSpeed);
+       if (turning)
+           transform.position = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 3f)), Time.deltaTime* speed);
 
         //transform.Translate(0, 0, -1 * Time.deltaTime * speed);
-        else
-        {
+      // else
+      // {
             transform.Translate(0, 0, Time.deltaTime * speed);
-        }
+       //}
         //Vector3 moveVector = direction * Time.deltaTime * speed;
         //transform.Translate(0, 0,moveVector.z);
     }

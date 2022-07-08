@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 72645860}
   - component: {fileID: 72645859}
   m_Layer: 0
-  m_Name: wall (1)
+  m_Name: obstacle2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -154,7 +154,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 8.08, z: 0.5}
   m_Children: []
   m_Father: {fileID: 741240750}
-  m_RootOrder: 5
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &72645859
 BoxCollider:
@@ -503,7 +503,7 @@ Transform:
   m_LocalPosition: {x: -5, y: -2.5, z: 0}
   m_LocalScale: {x: 0.5, y: 1, z: 10.5}
   m_Children: []
-  m_Father: {fileID: 741240750}
+  m_Father: {fileID: 879697191}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &603547287
@@ -676,10 +676,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1803395230}
-  - {fileID: 1842460689}
-  - {fileID: 1589448273}
-  - {fileID: 603547285}
+  - {fileID: 879697191}
   - {fileID: 2145957885}
   - {fileID: 72645858}
   m_Father: {fileID: 0}
@@ -703,6 +700,7 @@ MonoBehaviour:
   allfish: []
   Obstacles:
   - {fileID: 2145957886}
+  - {fileID: 72645859}
   _bounds: []
   swimLimits: {x: 5, y: 1, z: 5}
   goalPos: {x: 0, y: 0, z: 0}
@@ -710,7 +708,41 @@ MonoBehaviour:
   maxSpeed: 0.69
   neighbourDistance: 5.12
   rotationSpeed: 0.89
-  AvoidValue: 0.5
+  AvoidValue: 0.35
+--- !u!1 &879697190
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 879697191}
+  m_Layer: 0
+  m_Name: walls
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &879697191
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 879697190}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1803395230}
+  - {fileID: 1842460689}
+  - {fileID: 1589448273}
+  - {fileID: 603547285}
+  m_Father: {fileID: 741240750}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -823,7 +855,7 @@ Transform:
   m_LocalPosition: {x: 5, y: -2.5, z: 0}
   m_LocalScale: {x: 0.5, y: 1, z: 10.5}
   m_Children: []
-  m_Father: {fileID: 741240750}
+  m_Father: {fileID: 879697191}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &1589448275
@@ -1049,7 +1081,7 @@ Transform:
   m_LocalPosition: {x: 0, y: -2.5, z: 5}
   m_LocalScale: {x: 10, y: 1, z: 0.5}
   m_Children: []
-  m_Father: {fileID: 741240750}
+  m_Father: {fileID: 879697191}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1842460688
@@ -1081,7 +1113,7 @@ Transform:
   m_LocalPosition: {x: 0, y: -2.5, z: -5}
   m_LocalScale: {x: 10, y: 1, z: 0.5}
   m_Children: []
-  m_Father: {fileID: 741240750}
+  m_Father: {fileID: 879697191}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &1842460691
@@ -1212,7 +1244,7 @@ GameObject:
   - component: {fileID: 2145957887}
   - component: {fileID: 2145957886}
   m_Layer: 0
-  m_Name: wall
+  m_Name: obstacle1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1230,7 +1262,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 8.08, z: 0.5}
   m_Children: []
   m_Father: {fileID: 741240750}
-  m_RootOrder: 4
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &2145957886
 BoxCollider:

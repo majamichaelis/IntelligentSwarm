@@ -5,6 +5,7 @@ using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Jobs;
 
+[BurstCompile]
 public struct OneJobAgent : IJobParallelForTransform
 {
     [ReadOnly] public float swarmManagerRotationSpeed;
@@ -14,7 +15,7 @@ public struct OneJobAgent : IJobParallelForTransform
     [ReadOnly] public float speed;
     [ReadOnly] public float deltaTime;
     [ReadOnly] public NativeList<Vector3> positions;
-
+    [ReadOnly] public NativeArray<Bounds> bounds;
     [ReadOnly] public Vector3 swarmManagerPosition;
     [ReadOnly] public Vector3 swarmManagerSwimLimits;
     public bool turning;
@@ -22,28 +23,23 @@ public struct OneJobAgent : IJobParallelForTransform
 
     public void Execute(int index, TransformAccess transform)
     {
-        Bounds bounds = new Bounds(swarmManagerPosition, swarmManagerSwimLimits);
-        Vector3 direction = Vector3.zero;
-
-        if (!bounds.Contains(transform.position))
+        for (int i = 0; i < bounds.Length; i++)
         {
-            turning = true;
-            direction = swarmManagerPosition - transform.position;
+            if (bounds[i].Contains(transform.position))
+            {
+                turning = true;
+                break;
+            }
+            else
+                turning = false;
         }
-
-        else
-        {
-            turning = false;
-        }
-
+        
+        ApplyRules(transform);
 
         if (turning)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), swarmManagerRotationSpeed * deltaTime);
-        }
-  
-        ApplyRules(transform);
-        transform.position += deltaTime * speed * (transform.rotation * new Vector3(0, 0, 1));
+            transform.position = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 3f)), deltaTime * speed);
+        else
+            transform.position += deltaTime * speed * (transform.rotation * new Vector3(0, 0, 1));
     }
 
     private void ApplyRules(TransformAccess transform)
