@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class SwarmManager : MonoBehaviour
 {
+    //Schwarm bewegt sich nach der durchschnittlichen position, in die durchschnittliche Richtung, andere sollen nicht getroffen werden 
+
     public GameObject fishprefab;
+    public GameObject goalObject;
     public int numFish = 20;
     [HideInInspector]
     public GameObject[] allfish;
+    public List<Collider> Obstacles;
+    [HideInInspector] public Bounds[] _bounds;
     public Vector3 swimLimits = new Vector3(3, 3, 3);
 
-    //oder soll es ein festes Ziel geben
     [HideInInspector]
     public Vector3 goalPos;
 
@@ -22,10 +26,8 @@ public class SwarmManager : MonoBehaviour
     public float neighbourDistance;
     [Range(0.0f, 5.0f)]
     public float rotationSpeed;
-    [Range(1.0f, 5.0f)]
+    [Range(0.1f, 5.0f)]
     public float AvoidValue;
-
-    //Schwarm bewegt sich nach der durchschnittlichen position, in die durchschnittliche Richtung, andere sollen nicht getroffen werden 
 
     // Start is called before the first frame update
     void Start()
@@ -37,16 +39,35 @@ public class SwarmManager : MonoBehaviour
             allfish[i] = (GameObject)Instantiate(fishprefab, pos, Quaternion.identity);
             allfish[i].GetComponent<FishAgent>().swarmManager = this;
         }
-        goalPos = this.transform.position;
+        goalPos = goalObject.transform.position;
+        _bounds = getBoundsArray(Obstacles);
     }
 
     // Update is called once per frame
     void Update()
     {
+        /*
         if(Random.Range(0,100) < 10)
         {
-            goalPos = this.transform.position + new Vector3(Random.Range(-swimLimits.x, swimLimits.x), Random.Range(0, swimLimits.y), Random.Range(-swimLimits.z, swimLimits.z));
+            //goalPos = this.transform.position + new Vector3(Random.Range(-swimLimits.x, swimLimits.x), Random.Range(0, swimLimits.y), Random.Range(-swimLimits.z, swimLimits.z));
             //Debug.LogError("new goal" + goalPos);
+        }*/
+
+        goalPos = goalObject.transform.position;
+    }
+
+    public Bounds[] getBoundsArray(List<Collider> obstacles)
+    {
+        Bounds [] boundsArray = new Bounds[Obstacles.Count];
+
+        foreach (Collider obstacleCollider in obstacles)
+        {
+            for (int i = 0; i < boundsArray.Length; i++)
+            {
+                boundsArray[i] = obstacleCollider.bounds;
+                //Debug.LogError(obstacleCollider.bounds.center);
+            }
         }
+        return boundsArray;
     }
 }

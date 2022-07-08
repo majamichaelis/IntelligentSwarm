@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -412,6 +412,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 301765996}
   m_CullTransparentMesh: 1
+--- !u!1001 &403986786
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8467198488901995570, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467198488901995570, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467198488901995570, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467198488901995570, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467198488901995570, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467198488901995570, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467198488901995570, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467198488901995570, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467198488901995570, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467198488901995570, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467198488901995570, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467198488901995582, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+      propertyPath: m_Name
+      value: Goal
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+--- !u!1 &403986787 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8467198488901995582, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}
+  m_PrefabInstance: {fileID: 403986786}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &603547284
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,7 +657,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 741240750}
-  - component: {fileID: 741240749}
+  - component: {fileID: 741240751}
   m_Layer: 0
   m_Name: SwarmManager
   m_TagString: Untagged
@@ -603,28 +665,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &741240749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 741240748}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b051813e7c58c2428cf5a163374aff1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fishprefab: {fileID: 4882801322305221464, guid: c87fa0d6180121d42a09aff518a98e33, type: 3}
-  numFish: 150
-  allfish: []
-  swimLimits: {x: 5, y: 1, z: 5}
-  goalPos: {x: 0, y: 0, z: 0}
-  minSpeed: 0.15
-  maxSpeed: 1.13
-  neighbourDistance: 17.8
-  rotationSpeed: 1.22
-  AvoidValue: 1
 --- !u!4 &741240750
 Transform:
   m_ObjectHideFlags: 0
@@ -645,6 +685,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &741240751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741240748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b051813e7c58c2428cf5a163374aff1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fishprefab: {fileID: 4882801322305221464, guid: c87fa0d6180121d42a09aff518a98e33, type: 3}
+  goalObject: {fileID: 403986787}
+  numFish: 150
+  allfish: []
+  Obstacles:
+  - {fileID: 2145957886}
+  _bounds: []
+  swimLimits: {x: 5, y: 1, z: 5}
+  goalPos: {x: 0, y: 0, z: 0}
+  minSpeed: 0.07
+  maxSpeed: 0.69
+  neighbourDistance: 5.12
+  rotationSpeed: 0.89
+  AvoidValue: 0.5
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

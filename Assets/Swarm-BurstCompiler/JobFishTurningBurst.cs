@@ -12,26 +12,40 @@ public struct JobFishTurningBurst: IJobParallelForTransform
     [ReadOnly] public Vector3 swarmManagerPosition;
     [ReadOnly] public Vector3 swarmManagerSwimLimits;
     [ReadOnly] public float swarmManagerRotationSpeed;
+    [ReadOnly] public NativeArray<Bounds> obstacles;
+    [ReadOnly] public NativeList<Vector3> positions;
+
     public bool turning;
 
     public void Execute(int index, TransformAccess transform)
     {
-        Bounds bounds = new Bounds(swarmManagerPosition, swarmManagerSwimLimits);
         Vector3 direction = Vector3.zero;
 
-        if (!bounds.Contains(transform.position))
+        foreach (Bounds bounds in obstacles)
         {
-            turning = true;
-            direction = swarmManagerPosition - transform.position;
+            if (bounds.Contains(transform.position))
+            {
+                turning = true;
+                direction = swarmManagerPosition - transform.position;
+                Debug.Log("out of bounds");
+            }
+            else
+            {
+                turning = false;
+            }
         }
-        else
-        {
-            turning = false;
-        }
+        
 
         if (turning)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), swarmManagerRotationSpeed * deltaTime);
+           transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), swarmManagerRotationSpeed * deltaTime);
         }
+
+
+    }
+
+    IEnumerator MoveAway()
+    {
+        yield return null;
     }
 }
