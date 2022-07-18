@@ -18,26 +18,31 @@ public struct OneJobAgent : IJobParallelForTransform
     [ReadOnly] public NativeArray<Bounds> bounds;
     [ReadOnly] public Vector3 swarmManagerPosition;
     [ReadOnly] public Vector3 swarmManagerSwimLimits;
-    public bool turning;
+    [ReadOnly] public bool turning;
 
 
     public void Execute(int index, TransformAccess transform)
     {
+        
+        bool turningAway = turning;
         for (int i = 0; i < bounds.Length; i++)
         {
             if (bounds[i].Contains(transform.position))
             {
-                turning = true;
+                turningAway = true;
                 break;
             }
             else
-                turning = false;
+                turningAway = false;
         }
         
         ApplyRules(transform);
 
-        if (turning)
-            transform.position = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 3f)), deltaTime * speed);
+        if (turningAway)
+        {
+            transform.position = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 1f)), deltaTime * speed);
+
+        }
         else
             transform.position += deltaTime * speed * (transform.rotation * new Vector3(0, 0, 1));
     }

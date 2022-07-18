@@ -37,21 +37,19 @@ public class FishAgent : MonoBehaviour
             direction = Vector3.Reflect(this.transform.forward, hit.normal);
 
         }*/
-
+        /*
         for(int i=0;  i< swarmManager.bounds.Length; i++)
         {
             //Debug.Log(transform.position);
             //Debug.Log(boundsObstacles.center);
             //boundsObstacles.Expand(2f);
             //Debug.Log(swarmManager.bounds[i].center);
-            Debug.Log(i);
 
             if (swarmManager.bounds[i].Contains(transform.position))
             {
                 turning = true;
                 //direction = transform.position - boundsObstacles.center;
                 //direction = transform.position - swarmManager.goalPos;
-                Debug.Log("hit");
                 break;
             }
             else
@@ -72,14 +70,26 @@ public class FishAgent : MonoBehaviour
         */
        ApplyRules();
 
-       if (turning)
-           transform.position = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 3f)), Time.deltaTime* speed);
+       if (inObstacle(transform.position))
+       {
+            float directionValue = 0;
+            if (transform.rotation.z > 0)
+            {
+                directionValue = 1f;
+            }
+            else
+                directionValue = -1f;
+
+            Vector3 newPosition = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z +(directionValue* 2f))), Time.deltaTime * speed);
+            if(!inObstacle(newPosition))
+                transform.position = newPosition;
+       }
 
         //transform.Translate(0, 0, -1 * Time.deltaTime * speed);
-      // else
-      // {
-            transform.Translate(0, 0, Time.deltaTime * speed);
-       //}
+       else
+       {
+        transform.Translate(0, 0, Time.deltaTime * speed);
+       }
         //Vector3 moveVector = direction * Time.deltaTime * speed;
         //transform.Translate(0, 0,moveVector.z);
     }
@@ -133,5 +143,17 @@ public class FishAgent : MonoBehaviour
             if (directionNew != Vector3.zero)
                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionNew), swarmManager.rotationSpeed * Time.deltaTime);
         }
+    }
+
+    private bool inObstacle(Vector3 position)
+    {
+        for (int i = 0; i < swarmManager.bounds.Length; i++)
+        {
+            if (swarmManager.bounds[i].Contains(position))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

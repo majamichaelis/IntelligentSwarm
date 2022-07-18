@@ -82,6 +82,7 @@ public class OneJobManager : MonoBehaviour
         */
         bool turnFish = false;
 
+        /*
         foreach (GameObject fish in allfish)
         {
             RaycastHit hit = new RaycastHit();
@@ -92,7 +93,7 @@ public class OneJobManager : MonoBehaviour
                 turnFish = true;
                 direction = Vector3.Reflect(forwardVector, hit.normal);
             }
-        }
+        }*/
 
         float randomSpeed = Random.Range(minSpeed, maxSpeed);
         jobFishAgent = new OneJobAgent()
@@ -112,7 +113,7 @@ public class OneJobManager : MonoBehaviour
         jobHandle = jobFishAgent.Schedule(transforms);
 
         //JobHandle.CompleteAll(ref jobHandle);
-        jobHandle.Complete();
+        //jobHandle.Complete();
 
     }
     private void GetAllPositions()

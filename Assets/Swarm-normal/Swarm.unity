@@ -701,7 +701,7 @@ MonoBehaviour:
   Obstacles:
   - {fileID: 2145957886}
   - {fileID: 72645859}
-  _bounds: []
+  bounds: []
   swimLimits: {x: 5, y: 1, z: 5}
   goalPos: {x: 0, y: 0, z: 0}
   minSpeed: 0.07

@@ -637,7 +637,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishprefab: {fileID: 4882801322305221464, guid: 3f68ded242788424381c42727b60b163, type: 3}
   goalGameobject: {fileID: 1066249466}
-  Obstacles: []
+  Obstacles:
+  - {fileID: 2145957886}
   numFish: 150
   allfish: []
   swimLimits: {x: 5, y: 1, z: 5}
@@ -646,7 +647,7 @@ MonoBehaviour:
   maxSpeed: 1.13
   neighbourDistance: 13.18
   rotationSpeed: 1.22
-  AvoidValue: 0.36
+  AvoidValue: 0.34
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
