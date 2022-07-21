@@ -72,7 +72,7 @@ public class FishAgent : MonoBehaviour
 
        if (inObstacle(transform.position))
        {
-            float directionValue = 0;
+            float directionValue;
             if (transform.rotation.z > 0)
             {
                 directionValue = 1f;
@@ -80,16 +80,29 @@ public class FishAgent : MonoBehaviour
             else
                 directionValue = -1f;
 
-            Vector3 newPosition = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z +(directionValue* 2f))), Time.deltaTime * speed);
-            if(!inObstacle(newPosition))
+            Vector3 newPosition = Vector3.Slerp(transform.position, new Vector3(transform.position.x , transform.position.y, (transform.position.z + 2f) *directionValue), Time.deltaTime * swarmManager.maxSpeed);
+            if (!inObstacle(newPosition))
                 transform.position = newPosition;
-       }
+            else
+            {
+                /*
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(swarmManager.goalPos), swarmManager.rotationSpeed * Time.deltaTime);
+                Vector3 positionToGoal = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 2f)), Time.deltaTime * swarmManager.maxSpeed);
+
+                if (!inObstacle(positionToGoal))
+                    transform.position = positionToGoal;*/
+            }
+            //transform.Translate(0, 0, directionValue * Time.deltaTime * speed);
+        }
 
         //transform.Translate(0, 0, -1 * Time.deltaTime * speed);
-       else
-       {
-        transform.Translate(0, 0, Time.deltaTime * speed);
-       }
+        else
+        {
+            transform.Translate(0, 0, Time.deltaTime * speed);
+            Ray ray = new Ray(transform.position, transform.position);
+            float distance = 0f;
+            swarmManager.bounds[1].IntersectRay(ray, out distance);
+        }
         //Vector3 moveVector = direction * Time.deltaTime * speed;
         //transform.Translate(0, 0,moveVector.z);
     }

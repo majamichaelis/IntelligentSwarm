@@ -706,7 +706,7 @@ MonoBehaviour:
   goalPos: {x: 0, y: 0, z: 0}
   minSpeed: 0.07
   maxSpeed: 0.69
-  neighbourDistance: 5.12
+  neighbourDistance: 6
   rotationSpeed: 0.89
   AvoidValue: 0.35
 --- !u!1 &879697190
