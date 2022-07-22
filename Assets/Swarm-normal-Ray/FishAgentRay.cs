@@ -1,24 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class FishAgent : MonoBehaviour
+public class FishAgentRay : MonoBehaviour
 {
-    public SwarmManager swarmManager;
+    public SwarmManagerNormal swarmManager;
     private float speed;
     bool turning = false;
-    //private Vector3 direction;
+    private Vector3 goaldirection; 
 
     // Start is called before the first frame update
     void Start()
     {
         speed = Random.Range(swarmManager.minSpeed, swarmManager.maxSpeed);
-        //direction = Vector3.zero;
+        goaldirection = swarmManager.goalPos - this.transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
+        Ray rayForward = new Ray(transform.position, Vector3.forward);
+        float distanceToObstacle = Mathf.Infinity;
+
+        for (int i = 0; i < swarmManager.bounds.Length; i++)
+        {
+            if (swarmManager.bounds[i].IntersectRay(rayForward, out distanceToObstacle))
+            {
+                if (distanceToObstacle < swarmManager.obstacleDistance)
+                    turning = true;
+            }
+            else
+                turning = false;
+        }
         //kann noch ge?ndert werden
         //Bounds bounds = new Bounds(swarmManager.transform.position, swarmManager.swimLimits);                                      
         /*
@@ -68,10 +82,10 @@ public class FishAgent : MonoBehaviour
         }
         //else
         */
-       ApplyRules();
 
-       if (inObstacle(transform.position))
-       {
+        /*
+        if (inObstacle(transform.position))
+        {
             float directionValue;
             if (transform.rotation.z > 0)
             {
@@ -80,7 +94,7 @@ public class FishAgent : MonoBehaviour
             else
                 directionValue = -1f;
 
-            Vector3 newPosition = Vector3.Slerp(transform.position, new Vector3(transform.position.x , transform.position.y, (transform.position.z + 2f) *directionValue), Time.deltaTime * swarmManager.maxSpeed);
+            Vector3 newPosition = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 2f) * directionValue), Time.deltaTime * swarmManager.maxSpeed);
             if (!inObstacle(newPosition))
                 transform.position = newPosition;
             else
@@ -91,15 +105,26 @@ public class FishAgent : MonoBehaviour
 
                 if (!inObstacle(positionToGoal))
                     transform.position = positionToGoal;*/
-            }
-            //transform.Translate(0, 0, directionValue * Time.deltaTime * speed);
-        }
+        // }
+        //transform.Translate(0, 0, directionValue * Time.deltaTime * speed);
+        //}
 
         //transform.Translate(0, 0, -1 * Time.deltaTime * speed);
+
+        if (turning)
+        {
+            goaldirection = this.transform.position - swarmManager.goalPos;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(goaldirection), swarmManager.rotationSpeed * Time.deltaTime);
+        }
         else
         {
-            transform.Translate(0, 0, Time.deltaTime * speed);
+            goaldirection = swarmManager.goalPos - this.transform.position;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(goaldirection), swarmManager.rotationSpeed * Time.deltaTime);
+            ApplyRules();
         }
+
+        transform.Translate(0, 0, Time.deltaTime * speed);
+
         //Vector3 moveVector = direction * Time.deltaTime * speed;
         //transform.Translate(0, 0,moveVector.z);
     }
@@ -112,46 +137,47 @@ public class FishAgent : MonoBehaviour
         Vector3 vcentre = Vector3.zero;
         Vector3 vavoid = Vector3.zero;
         float gSpeed = 0.01f;
-        float nDistance; 
+        float nDistance;
         int groupSize = 0;
 
-        foreach(GameObject go in gos)
+        foreach (GameObject go in gos)
         {
-            if(go != this.gameObject)
+            if (go != this.gameObject)
             {
                 nDistance = Vector3.Distance(go.transform.position, this.transform.position);
 
                 //nur f?r Fische, die sich in der Nachbarschaft befinden
-                if(nDistance <= swarmManager.neighbourDistance)
+                if (nDistance <= swarmManager.neighbourDistance)
                 {
                     //eine Untergruppe, dessen Positionen werden ber?cksichtigt 
                     vcentre += go.transform.position;
                     groupSize++;
 
-                    if(nDistance < swarmManager.AvoidValue)
+                    if (nDistance < swarmManager.AvoidValue)
                     {
                         //wegbewegen 
                         vavoid = vavoid + (this.transform.position - go.transform.position);
                     }
 
-                    FishAgent anotherFish = go.GetComponent<FishAgent>();
+                    FishAgentRay anotherFish = go.GetComponent<FishAgentRay>();
                     gSpeed = gSpeed + anotherFish.speed;
                 }
             }
         }
+
         if (groupSize > 0)
         {
-            vcentre = vcentre/groupSize + (swarmManager.goalPos - this.transform.position);
-            speed = gSpeed/groupSize;
+            vcentre = vcentre / groupSize + (goaldirection - this.transform.position);
+            speed = gSpeed / groupSize;
             Vector3 directionNew = Vector3.zero;
 
             directionNew = (vcentre + vavoid) - transform.position;
-            //if (turning)
-               // directionNew = direction;
-            
+            // if (turning)
+            // directionNew = direction;
+
             //schon Richtige Richtung 
             if (directionNew != Vector3.zero)
-               transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionNew), swarmManager.rotationSpeed * Time.deltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionNew), swarmManager.rotationSpeed * Time.deltaTime);
         }
     }
 

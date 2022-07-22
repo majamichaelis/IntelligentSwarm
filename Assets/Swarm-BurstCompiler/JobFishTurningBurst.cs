@@ -20,7 +20,6 @@ public struct JobFishTurningBurst: IJobParallelForTransform
     public void Execute(int index, TransformAccess transform)
     {
         Vector3 direction = Vector3.zero;
-
         foreach (Bounds bounds in obstacles)
         {
             if (bounds.Contains(transform.position))
@@ -35,17 +34,9 @@ public struct JobFishTurningBurst: IJobParallelForTransform
             }
         }
         
-
         if (turning)
         {
            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), swarmManagerRotationSpeed * deltaTime);
         }
-
-
-    }
-
-    IEnumerator MoveAway()
-    {
-        yield return null;
     }
 }
