@@ -82,9 +82,9 @@ public class FishAgentRay : MonoBehaviour
         }
         //else
         */
+        ApplyRules();
 
-        /*
-        if (inObstacle(transform.position))
+        if (turning)
         {
             float directionValue;
             if (transform.rotation.z > 0)
@@ -94,42 +94,33 @@ public class FishAgentRay : MonoBehaviour
             else
                 directionValue = -1f;
 
-            Vector3 newPosition = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 2f) * directionValue), Time.deltaTime * swarmManager.maxSpeed);
+            Vector3 newPosition = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 3f) * directionValue), Time.deltaTime * swarmManager.maxSpeed);
             if (!inObstacle(newPosition))
                 transform.position = newPosition;
             else
             {
+                transform.Translate(Time.deltaTime * directionValue * speed, 0f, 0f);
+
                 /*
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(swarmManager.goalPos), swarmManager.rotationSpeed * Time.deltaTime);
                 Vector3 positionToGoal = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 2f)), Time.deltaTime * swarmManager.maxSpeed);
 
                 if (!inObstacle(positionToGoal))
                     transform.position = positionToGoal;*/
-        // }
-        //transform.Translate(0, 0, directionValue * Time.deltaTime * speed);
-        //}
+            }
+            //transform.Translate(0, 0, directionValue * Time.deltaTime * speed);
+        }
 
         //transform.Translate(0, 0, -1 * Time.deltaTime * speed);
-
-        if (turning)
-        {
-            goaldirection = this.transform.position - swarmManager.goalPos;
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(goaldirection), swarmManager.rotationSpeed * Time.deltaTime);
-        }
         else
         {
-            goaldirection = swarmManager.goalPos - this.transform.position;
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(goaldirection), swarmManager.rotationSpeed * Time.deltaTime);
-            ApplyRules();
+            transform.Translate(0, 0, Time.deltaTime * speed);
         }
-
-        transform.Translate(0, 0, Time.deltaTime * speed);
-
         //Vector3 moveVector = direction * Time.deltaTime * speed;
         //transform.Translate(0, 0,moveVector.z);
     }
 
-    private void ApplyRules()
+    private void ApplyRules1()
     {
         GameObject[] gos;
         gos = swarmManager.allfish;
@@ -173,6 +164,56 @@ public class FishAgentRay : MonoBehaviour
 
             directionNew = (vcentre + vavoid) - transform.position;
             // if (turning)
+            // directionNew = direction;
+
+            //schon Richtige Richtung 
+            if (directionNew != Vector3.zero)
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(directionNew), swarmManager.rotationSpeed * Time.deltaTime);
+        }
+    }
+    private void ApplyRules()
+    {
+        GameObject[] gos;
+        gos = swarmManager.allfish;
+
+        Vector3 vcentre = Vector3.zero;
+        Vector3 vavoid = Vector3.zero;
+        float gSpeed = 0.01f;
+        float nDistance;
+        int groupSize = 0;
+
+        foreach (GameObject go in gos)
+        {
+            if (go != this.gameObject)
+            {
+                nDistance = Vector3.Distance(go.transform.position, this.transform.position);
+
+                //nur f?r Fische, die sich in der Nachbarschaft befinden
+                if (nDistance <= swarmManager.neighbourDistance)
+                {
+                    //eine Untergruppe, dessen Positionen werden ber?cksichtigt 
+                    vcentre += go.transform.position;
+                    groupSize++;
+
+                    if (nDistance < swarmManager.AvoidValue)
+                    {
+                        //wegbewegen 
+                        vavoid = vavoid + (this.transform.position - go.transform.position);
+                    }
+
+                    FishAgentRay anotherFish = go.GetComponent<FishAgentRay>();
+                    gSpeed = gSpeed + anotherFish.speed;
+                }
+            }
+        }
+        if (groupSize > 0)
+        {
+            vcentre = vcentre / groupSize + (swarmManager.goalPos - this.transform.position);
+            speed = gSpeed / groupSize;
+            Vector3 directionNew = Vector3.zero;
+
+            directionNew = (vcentre + vavoid) - transform.position;
+            //if (turning)
             // directionNew = direction;
 
             //schon Richtige Richtung 

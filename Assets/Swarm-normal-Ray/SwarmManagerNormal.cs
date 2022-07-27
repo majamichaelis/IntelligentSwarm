@@ -17,7 +17,6 @@ public class SwarmManagerNormal : MonoBehaviour
 
     [HideInInspector]
     public Vector3 goalPos;
-
     [Range(0.0f, 5.0f)]
     public float minSpeed;
     [Range(0.0f, 5.0f)]

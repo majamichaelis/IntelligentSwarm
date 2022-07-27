@@ -7,13 +7,12 @@ public class FishAgent : MonoBehaviour
     public SwarmManager swarmManager;
     private float speed;
     bool turning = false;
-    //private Vector3 direction;
+    private float obstacleDetectionValue = 3f;
 
     // Start is called before the first frame update
     void Start()
     {
         speed = Random.Range(swarmManager.minSpeed, swarmManager.maxSpeed);
-        //direction = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -80,11 +79,13 @@ public class FishAgent : MonoBehaviour
             else
                 directionValue = -1f;
 
-            Vector3 newPosition = Vector3.Slerp(transform.position, new Vector3(transform.position.x , transform.position.y, (transform.position.z + 2f) *directionValue), Time.deltaTime * swarmManager.maxSpeed);
+            Vector3 newPosition = Vector3.Slerp(transform.position, new Vector3(transform.position.x , transform.position.y, (transform.position.z + obstacleDetectionValue) *directionValue), Time.deltaTime * swarmManager.maxSpeed);
             if (!inObstacle(newPosition))
                 transform.position = newPosition;
             else
             {
+                transform.Translate(Time.deltaTime* directionValue * speed,0f,0f);
+
                 /*
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(swarmManager.goalPos), swarmManager.rotationSpeed * Time.deltaTime);
                 Vector3 positionToGoal = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 2f)), Time.deltaTime * swarmManager.maxSpeed);
