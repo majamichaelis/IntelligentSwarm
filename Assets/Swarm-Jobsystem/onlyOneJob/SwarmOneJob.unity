@@ -639,6 +639,7 @@ MonoBehaviour:
   goalGameobject: {fileID: 1066249466}
   Obstacles:
   - {fileID: 2145957886}
+  - {fileID: 72645859}
   numFish: 150
   allfish: []
   swimLimits: {x: 5, y: 1, z: 5}

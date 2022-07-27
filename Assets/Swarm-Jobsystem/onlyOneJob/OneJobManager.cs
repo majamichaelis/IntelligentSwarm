@@ -15,10 +15,8 @@ public class OneJobManager : MonoBehaviour
     [HideInInspector]
     public GameObject[] allfish;
     public NativeList<Vector3> fishPositions;
-
     public Vector3 swimLimits = new Vector3(3, 3, 3);
 
-    //oder soll es ein festes Ziel geben
     [HideInInspector]
     public Vector3 goalPos;
 
@@ -44,8 +42,6 @@ public class OneJobManager : MonoBehaviour
         fishPositions.Dispose();
         boundsArray.Dispose();
     }
-
-    //Schwarm bewegt sich nach der durchschnittlichen position, in die durchschnittliche Richtung, andere sollen nicht getroffen werden 
 
     // Start is called before the first frame update
     void Start()
@@ -74,26 +70,8 @@ public class OneJobManager : MonoBehaviour
         float time = Time.deltaTime;
         jobHandle.Complete();
         GetAllPositions();
-        /*
-        if (Random.Range(0, 100) < 10)
-        {
-            goalPos = this.transform.position + new Vector3(Random.Range(-swimLimits.x, swimLimits.x), Random.Range(0, swimLimits.y), Random.Range(-swimLimits.z, swimLimits.z));
-        }
-        */
+       
         bool turnFish = false;
-
-        /*
-        foreach (GameObject fish in allfish)
-        {
-            RaycastHit hit = new RaycastHit();
-            Vector3 direction = Vector3.zero;
-            Vector3 forwardVector = transform.rotation * Vector3.forward;
-            if (Physics.Raycast(fish.transform.position, forwardVector * 4, out hit))
-            {
-                turnFish = true;
-                direction = Vector3.Reflect(forwardVector, hit.normal);
-            }
-        }*/
 
         float randomSpeed = Random.Range(minSpeed, maxSpeed);
         jobFishAgent = new OneJobAgent()
@@ -106,7 +84,6 @@ public class OneJobManager : MonoBehaviour
             bounds = boundsArray,
 
             speed = randomSpeed,
-            turning = turnFish,
             positions = fishPositions,
             deltaTime = time
         };

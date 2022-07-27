@@ -18,33 +18,37 @@ public struct OneJobAgent : IJobParallelForTransform
     [ReadOnly] public NativeArray<Bounds> bounds;
     [ReadOnly] public Vector3 swarmManagerPosition;
     [ReadOnly] public Vector3 swarmManagerSwimLimits;
-    [ReadOnly] public bool turning;
+  //  [ReadOnly] public bool turning;
 
 
     public void Execute(int index, TransformAccess transform)
     {
-        
-        bool turningAway = turning;
-        for (int i = 0; i < bounds.Length; i++)
-        {
-            if (bounds[i].Contains(transform.position))
-            {
-                turningAway = true;
-                break;
-            }
-            else
-                turningAway = false;
-        }
-        
         ApplyRules(transform);
 
-        if (turningAway)
+        if (inObstacle(transform.position))
         {
-            transform.position = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 1f)), deltaTime * speed);
+            float directionValue;
+            if (transform.rotation.z > 0)
+            {
+                directionValue = 1f;
+            }
+            else
+                directionValue = -1f;
 
+            //maxspeed
+            Vector3 newPosition = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 3f) * directionValue), deltaTime * speed);
+            if (!inObstacle(newPosition))
+                transform.position = newPosition;
+            else
+            {
+                transform.position += deltaTime * speed * (transform.rotation * new Vector3(1, 0, 0));
+            }
         }
         else
+        {
             transform.position += deltaTime * speed * (transform.rotation * new Vector3(0, 0, 1));
+
+        }
     }
 
     private void ApplyRules(TransformAccess transform)
@@ -89,5 +93,18 @@ public struct OneJobAgent : IJobParallelForTransform
             if (direction != Vector3.zero)
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), swarmManagerRotationSpeed * deltaTime);
         }
+    }
+
+
+    private bool inObstacle(Vector3 position)
+    {
+        for (int i = 0; i < bounds.Length; i++)
+        {
+            if (bounds[i].Contains(position))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
