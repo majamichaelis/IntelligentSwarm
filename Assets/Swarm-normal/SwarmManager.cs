@@ -12,7 +12,10 @@ public class SwarmManager : MonoBehaviour
     [HideInInspector]
     public GameObject[] allfish;
     public List<Collider> Obstacles;
-    [HideInInspector] public Bounds[] bounds;
+    public List<Collider> RejectionObjects;
+    [HideInInspector] public Bounds[] boundsObstacle;
+    [HideInInspector] public Bounds[] boundsRejection;
+    public List<RejectionObject> rejections;
     public Vector3 swimLimits = new Vector3(3, 3, 3);
 
     [HideInInspector]
@@ -39,31 +42,39 @@ public class SwarmManager : MonoBehaviour
             allfish[i] = (GameObject)Instantiate(fishprefab, pos, Quaternion.identity);
             allfish[i].GetComponent<FishAgent>().swarmManager = this;
         }
+        boundsObstacle = new Bounds[Obstacles.Capacity];
+        boundsRejection = new Bounds[RejectionObjects.Capacity];
         goalPos = goalObject.transform.position;
-        bounds = getBoundsArray(Obstacles);
+        if(Obstacles.Capacity != 0)
+            boundsObstacle = getBoundsArray(Obstacles);
+        if(Obstacles.Capacity != 0)
+            boundsRejection = getBoundsArray(RejectionObjects);
     }
 
     // Update is called once per frame
     void Update()
     {
-        /*
-        if(Random.Range(0,100) < 10)
-        {
-            //goalPos = this.transform.position + new Vector3(Random.Range(-swimLimits.x, swimLimits.x), Random.Range(0, swimLimits.y), Random.Range(-swimLimits.z, swimLimits.z));
-            //Debug.LogError("new goal" + goalPos);
-        }*/
-
         goalPos = goalObject.transform.position;
     }
 
     public Bounds[] getBoundsArray(List<Collider> obstacles)
     {
-        Bounds [] boundsArray = new Bounds[Obstacles.Count];
+        Bounds [] boundsArray = new Bounds[obstacles.Capacity];
 
         for (int i = 0; i < boundsArray.Length; i++)
         {
               boundsArray[i] = obstacles[i].bounds;
         }
         return boundsArray;
+    }
+
+    [System.Serializable]
+    public struct RejectionObject
+    {
+        public Collider rejectionObjectCollider;
+        public float dectectionRayValue;
+        public float speed;
+        public bool UpDown; 
+
     }
 }

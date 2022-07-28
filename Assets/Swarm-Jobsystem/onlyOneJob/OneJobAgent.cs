@@ -15,7 +15,8 @@ public struct OneJobAgent : IJobParallelForTransform
     [ReadOnly] public float speed;
     [ReadOnly] public float deltaTime;
     [ReadOnly] public NativeList<Vector3> positions;
-    [ReadOnly] public NativeArray<Bounds> bounds;
+    [ReadOnly] public NativeArray<Bounds> boundsObstacles;
+    [ReadOnly] public NativeArray<Bounds> boundsRejection;
     [ReadOnly] public Vector3 swarmManagerPosition;
     [ReadOnly] public Vector3 swarmManagerSwimLimits;
   //  [ReadOnly] public bool turning;
@@ -98,9 +99,9 @@ public struct OneJobAgent : IJobParallelForTransform
 
     private bool inObstacle(Vector3 position)
     {
-        for (int i = 0; i < bounds.Length; i++)
+        for (int i = 0; i < boundsObstacles.Length; i++)
         {
-            if (bounds[i].Contains(position))
+            if (boundsObstacles[i].Contains(position))
             {
                 return true;
             }

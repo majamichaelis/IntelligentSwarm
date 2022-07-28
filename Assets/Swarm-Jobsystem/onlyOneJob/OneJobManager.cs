@@ -10,7 +10,10 @@ public class OneJobManager : MonoBehaviour
     public GameObject fishprefab;
     public GameObject goalGameobject;
     public List<Collider> Obstacles;
-    private NativeArray<Bounds> boundsArray;
+    public List<Collider> RejectionObjects;
+    private NativeArray<Bounds> obstacleArray;
+    private NativeArray<Bounds> rejectionArray;
+
     public int numFish = 20;
     [HideInInspector]
     public GameObject[] allfish;
@@ -40,14 +43,16 @@ public class OneJobManager : MonoBehaviour
         jobHandle.Complete();
         transforms.Dispose();
         fishPositions.Dispose();
-        boundsArray.Dispose();
+        obstacleArray.Dispose();
+        rejectionArray.Dispose();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         transforms = new TransformAccessArray(0, -1);
-        boundsArray = getColliderNativeArray(Obstacles);
+        obstacleArray = getColliderNativeArray(Obstacles);
+        rejectionArray = getColliderNativeArray(RejectionObjects);
 
         allfish = new GameObject[numFish];
         fishPositions = new NativeList<Vector3>(Allocator.TempJob);
@@ -71,8 +76,6 @@ public class OneJobManager : MonoBehaviour
         jobHandle.Complete();
         GetAllPositions();
        
-        bool turnFish = false;
-
         float randomSpeed = Random.Range(minSpeed, maxSpeed);
         jobFishAgent = new OneJobAgent()
         {
@@ -81,7 +84,8 @@ public class OneJobManager : MonoBehaviour
             swarmManagerNeighbourDistance = neighbourDistance,
             swarmManagerGoalpos = goalPos,
 
-            bounds = boundsArray,
+            boundsObstacles = obstacleArray,
+            boundsRejection = rejectionArray, 
 
             speed = randomSpeed,
             positions = fishPositions,
@@ -105,7 +109,7 @@ public class OneJobManager : MonoBehaviour
 
     public NativeArray<Bounds> getColliderNativeArray(List<Collider> obstacles)
     {
-        NativeArray<Bounds> boundsArray = new NativeArray<Bounds>(Obstacles.Count, Allocator.Persistent);
+        NativeArray<Bounds> boundsArray = new NativeArray<Bounds>(obstacles.Count, Allocator.Persistent);
 
         for (int i = 0; i < boundsArray.Length; i++)
         {
