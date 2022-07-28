@@ -4,6 +4,7 @@ using Unity.Burst;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Jobs;
+using static OneJobManager;
 
 [BurstCompile]
 public struct OneJobAgent : IJobParallelForTransform
@@ -16,14 +17,15 @@ public struct OneJobAgent : IJobParallelForTransform
     [ReadOnly] public float deltaTime;
     [ReadOnly] public NativeList<Vector3> positions;
     [ReadOnly] public NativeArray<Bounds> boundsObstacles;
-    [ReadOnly] public NativeArray<Bounds> boundsRejection;
     [ReadOnly] public Vector3 swarmManagerPosition;
     [ReadOnly] public Vector3 swarmManagerSwimLimits;
-  //  [ReadOnly] public bool turning;
-
+    [ReadOnly] public NativeArray<RejectionObjectBounds> rejectionObjects;
 
     public void Execute(int index, TransformAccess transform)
     {
+        Vector3 direction = swarmManagerGoalpos - transform.position;
+
+        RejectionDetection(transform);
         ApplyRules(transform);
 
         if (inObstacle(transform.position))
@@ -48,7 +50,6 @@ public struct OneJobAgent : IJobParallelForTransform
         else
         {
             transform.position += deltaTime * speed * (transform.rotation * new Vector3(0, 0, 1));
-
         }
     }
 
@@ -78,7 +79,7 @@ public struct OneJobAgent : IJobParallelForTransform
                         vavoid = vavoid + (transform.position - fishposition);
                     }
                     //vielleicht neue zufällige Zeit?
-                    //FishAgent anotherFish = go.GetComponent<FishAgent>();
+                    //FishAgent anotherFish = go.GetComponent<FishAgent>(); 
                     //gSpeed = gSpeed + anotherFish.speed;
                 }
             }
@@ -107,5 +108,89 @@ public struct OneJobAgent : IJobParallelForTransform
             }
         }
         return false;
+    }
+
+    private void RejectionDetection(TransformAccess transform)
+    {
+        Ray rayForward = new Ray(transform.position, Vector3.forward);
+        float distanceToObstacle = Mathf.Infinity;
+
+        for (int i = 0; i < rejectionObjects.Length; i++)
+        {
+            if (rejectionObjects[i].rejectionObjectBounds.IntersectRay(rayForward, out distanceToObstacle))
+            {
+                if (rejectionObjects[i].UpDown == true)
+                {
+                    RejectionMoveUpDown(transform, i, distanceToObstacle);
+                }
+                else
+                {
+                    RejectionMoveRightLeft(transform, i, distanceToObstacle);
+                }
+            }
+        }
+    }
+
+    private void RejectionMoveUpDown(TransformAccess transform, int indexI, float distanceToObstacle)
+    {
+        float rotationSpeed = RemapValue(Mathf.Abs(distanceToObstacle), 0, rejectionObjects[indexI].dectectionRayValue, rejectionObjects[indexI].rejectionMinSpeed, rejectionObjects[indexI].rejectionMaxSpeed);
+        
+        if (distanceToObstacle > rejectionObjects[indexI].dectectionRayValue && distanceToObstacle >= 0)
+        {
+            if (transform.position.y > rejectionObjects[indexI].rejectionObjectBounds.center.y)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.up), rotationSpeed * deltaTime);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.down), rotationSpeed * deltaTime);
+            }
+        }
+        else if (distanceToObstacle >rejectionObjects[indexI].dectectionRayValue && distanceToObstacle <= 0)
+        {
+            if (transform.position.y > rejectionObjects[indexI].rejectionObjectBounds.center.y)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.up), rotationSpeed * deltaTime);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.down), rotationSpeed * deltaTime);
+            }
+        }
+    }
+
+    private void RejectionMoveRightLeft(TransformAccess transform, int indexI, float distanceToObstacle)
+    {
+        float rotationSpeed = RemapValue(Mathf.Abs(distanceToObstacle), 0, rejectionObjects[indexI].dectectionRayValue, rejectionObjects[indexI].rejectionMinSpeed, rejectionObjects[indexI].rejectionMaxSpeed);
+
+        if (distanceToObstacle < rejectionObjects[indexI].dectectionRayValue && distanceToObstacle >= 0)
+        {
+            if (transform.position.x > rejectionObjects[indexI].rejectionObjectBounds.center.x)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), rotationSpeed * deltaTime);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), rotationSpeed * deltaTime);
+            }
+        }
+        else if (distanceToObstacle > -rejectionObjects[indexI].dectectionRayValue && distanceToObstacle <= 0)
+        {
+            if (transform.position.x > rejectionObjects[indexI].rejectionObjectBounds.center.x)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), rotationSpeed * deltaTime);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), rotationSpeed * deltaTime);
+            }
+        }
+    }
+    /*
+     * input: distance Value (from1 to1) to calculate a value between from2 to2
+     */
+    private float RemapValue(float value, float from1, float to1, float from2, float to2)
+    {
+            return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }
 }

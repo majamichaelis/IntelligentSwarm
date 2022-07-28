@@ -10,9 +10,9 @@ public class OneJobManager : MonoBehaviour
     public GameObject fishprefab;
     public GameObject goalGameobject;
     public List<Collider> Obstacles;
-    public List<Collider> RejectionObjects;
     private NativeArray<Bounds> obstacleArray;
-    private NativeArray<Bounds> rejectionArray;
+    private NativeArray<RejectionObjectBounds> RejectionsBoundsNativeArray;
+    public List<RejectionObjectCollider> rejectionsColliderList;
 
     public int numFish = 20;
     [HideInInspector]
@@ -38,13 +38,32 @@ public class OneJobManager : MonoBehaviour
     OneJobAgent jobFishAgent;
     JobHandle jobHandle;
 
+    [System.Serializable]
+    public struct RejectionObjectCollider
+    {
+        public Collider rejectionObjectCollider;
+        public float dectectionRayValue;
+        public float rejectionMaxSpeed;
+        public float rejectionMinSpeed;
+        public bool UpDown;
+    }
+
+    public struct RejectionObjectBounds
+    {
+        public Bounds rejectionObjectBounds;
+        public float dectectionRayValue;
+        public float rejectionMaxSpeed;
+        public float rejectionMinSpeed;
+        public bool UpDown;
+    }
+
     private void OnDisable()
     {
         jobHandle.Complete();
         transforms.Dispose();
         fishPositions.Dispose();
         obstacleArray.Dispose();
-        rejectionArray.Dispose();
+        RejectionsBoundsNativeArray.Dispose();
     }
 
     // Start is called before the first frame update
@@ -52,7 +71,7 @@ public class OneJobManager : MonoBehaviour
     {
         transforms = new TransformAccessArray(0, -1);
         obstacleArray = getColliderNativeArray(Obstacles);
-        rejectionArray = getColliderNativeArray(RejectionObjects);
+        RejectionsBoundsNativeArray = FillRejectionsArray(rejectionsColliderList);
 
         allfish = new GameObject[numFish];
         fishPositions = new NativeList<Vector3>(Allocator.TempJob);
@@ -63,7 +82,6 @@ public class OneJobManager : MonoBehaviour
             allfish[i] = (GameObject)Instantiate(fishprefab, pos, Quaternion.identity);
             transforms.Add(allfish[i].transform);
             fishPositions.Add(allfish[i].transform.position);
-            //allfishNative[i] = allfish[i].TryGetComponent<Transform>();
         }
         goalPos = goalGameobject.transform.position;
     }
@@ -85,8 +103,8 @@ public class OneJobManager : MonoBehaviour
             swarmManagerGoalpos = goalPos,
 
             boundsObstacles = obstacleArray,
-            boundsRejection = rejectionArray, 
-
+            rejectionObjects = RejectionsBoundsNativeArray,
+           
             speed = randomSpeed,
             positions = fishPositions,
             deltaTime = time
@@ -95,7 +113,6 @@ public class OneJobManager : MonoBehaviour
 
         //JobHandle.CompleteAll(ref jobHandle);
         //jobHandle.Complete();
-
     }
     private void GetAllPositions()
     {
@@ -107,15 +124,33 @@ public class OneJobManager : MonoBehaviour
         }
     }
 
-    public NativeArray<Bounds> getColliderNativeArray(List<Collider> obstacles)
+    private NativeArray<Bounds> getColliderNativeArray(List<Collider> obstacles)
     {
-        NativeArray<Bounds> boundsArray = new NativeArray<Bounds>(obstacles.Count, Allocator.Persistent);
+        NativeArray<Bounds> newArray = new NativeArray<Bounds>(obstacles.Count, Allocator.Persistent);
 
-        for (int i = 0; i < boundsArray.Length; i++)
+        for (int i = 0; i < newArray.Length; i++)
         {
-            boundsArray[i] = obstacles[i].bounds;
+            newArray[i] = obstacles[i].bounds;
         }
-        return boundsArray;
+        return newArray;
     }
+
+    private NativeArray<RejectionObjectBounds> FillRejectionsArray(List<RejectionObjectCollider> rejectionObjects)
+    {
+        NativeArray<RejectionObjectBounds> newArray = new NativeArray<RejectionObjectBounds>(rejectionObjects.Count, Allocator.Persistent);
+
+        for (int i = 0; i < newArray.Length; i++)
+        {
+            RejectionObjectBounds arrayObject = new RejectionObjectBounds();
+            arrayObject.rejectionObjectBounds = rejectionObjects[i].rejectionObjectCollider.bounds;
+            arrayObject.rejectionMinSpeed = rejectionObjects[i].rejectionMinSpeed;
+            arrayObject.rejectionMaxSpeed = rejectionObjects[i].rejectionMaxSpeed;
+            arrayObject.dectectionRayValue = rejectionObjects[i].dectectionRayValue;
+
+            newArray[i] = arrayObject;
+        }
+        return newArray;
+    }
+
 
 }
