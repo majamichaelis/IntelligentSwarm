@@ -653,9 +653,9 @@ MonoBehaviour:
   - {fileID: 72645859}
   rejectionsColliderList:
   - rejectionObjectCollider: {fileID: 1212331711}
-    dectectionRayValue: 1
-    rejectionMaxSpeed: 1
-    rejectionMinSpeed: 5
+    dectectionRayValue: 0.5
+    rejectionMaxSpeed: 5
+    rejectionMinSpeed: 8
     UpDown: 0
   numFish: 150
   allfish: []

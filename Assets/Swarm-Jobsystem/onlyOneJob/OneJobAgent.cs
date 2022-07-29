@@ -25,7 +25,8 @@ public struct OneJobAgent : IJobParallelForTransform
     {
         Vector3 direction = swarmManagerGoalpos - transform.position;
 
-        RejectionDetection(transform);
+        RejectionDetectionZ(transform);
+        RejectionDetectionX(transform);
         ApplyRules(transform);
 
         if (inObstacle(transform.position))
@@ -42,6 +43,7 @@ public struct OneJobAgent : IJobParallelForTransform
             Vector3 newPosition = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 3f) * directionValue), deltaTime * speed);
             if (!inObstacle(newPosition))
                 transform.position = newPosition;
+
             else
             {
                 transform.position += deltaTime * speed * (transform.rotation * new Vector3(1, 0, 0));
@@ -97,7 +99,6 @@ public struct OneJobAgent : IJobParallelForTransform
         }
     }
 
-
     private bool inObstacle(Vector3 position)
     {
         for (int i = 0; i < boundsObstacles.Length; i++)
@@ -110,7 +111,8 @@ public struct OneJobAgent : IJobParallelForTransform
         return false;
     }
 
-    private void RejectionDetection(TransformAccess transform)
+
+    private void RejectionDetectionZ(TransformAccess transform)
     {
         Ray rayForward = new Ray(transform.position, Vector3.forward);
         float distanceToObstacle = Mathf.Infinity;
@@ -158,7 +160,6 @@ public struct OneJobAgent : IJobParallelForTransform
             }
         }
     }
-
     private void RejectionMoveRightLeft(TransformAccess transform, int indexI, float distanceToObstacle)
     {
         float rotationSpeed = RemapValue(Mathf.Abs(distanceToObstacle), 0, rejectionObjects[indexI].dectectionRayValue, rejectionObjects[indexI].rejectionMinSpeed, rejectionObjects[indexI].rejectionMaxSpeed);
@@ -183,6 +184,27 @@ public struct OneJobAgent : IJobParallelForTransform
             else
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), rotationSpeed * deltaTime);
+            }
+        }
+    }
+
+    private void RejectionDetectionX(TransformAccess transform)
+    {
+        Ray rayForward = new Ray(transform.position, Vector3.right);
+        float distanceToObstacle = Mathf.Infinity;
+
+        for (int i = 0; i < rejectionObjects.Length; i++)
+        {
+            if (rejectionObjects[i].rejectionObjectBounds.IntersectRay(rayForward, out distanceToObstacle))
+            {
+                if (rejectionObjects[i].UpDown == true)
+                {
+                    RejectionMoveUpDown(transform, i, distanceToObstacle);
+                }
+                else
+                {
+                    RejectionMoveRightLeft(transform, i, distanceToObstacle);
+                }
             }
         }
     }

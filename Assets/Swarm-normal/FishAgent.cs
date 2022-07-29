@@ -67,7 +67,9 @@ public class FishAgent : MonoBehaviour
         }
         //else
         */
-        RejectionDetection();
+        RejectionDetectionZ();
+        RejectionDetectionX();
+
         ApplyRules();
 
 
@@ -235,7 +237,7 @@ public class FishAgent : MonoBehaviour
     }
 
     //speedEinstellung? 
-    private void RejectionDetection()
+    private void RejectionDetectionZ()
     {
         direction = swarmManager.goalPos - this.transform.position;
         Ray rayForward = new Ray(transform.position, Vector3.forward);
@@ -245,14 +247,17 @@ public class FishAgent : MonoBehaviour
         {
             if (swarmManager.rejections[i].rejectionObjectCollider.bounds.IntersectRay(rayForward, out distanceToObstacle))
             {
-                float speed = swarmManager.rejections[i].speed; 
+                float speed = swarmManager.rejections[i].speed;
+                RejectionMoveRightLeft(i, distanceToObstacle, speed);
+                RejectionMoveUpDown(i, distanceToObstacle, speed);
+
                 if (swarmManager.rejections[i].UpDown == true)
                 {
-                    RejectionMoveUpDown(i, distanceToObstacle, speed);
+                   // RejectionMoveUpDown(i, distanceToObstacle, speed);
                 }
                 else
                 {
-                    RejectionMoveRightLeft(i, distanceToObstacle, speed);
+                   // RejectionMoveRightLeft(i, distanceToObstacle, speed);
                 }
             }
         }
@@ -262,7 +267,6 @@ public class FishAgent : MonoBehaviour
     {
         if (distanceToObstacle < swarmManager.rejections[indexI].dectectionRayValue && distanceToObstacle >= 0)
         {
-            Debug.LogError("hai");
             if (transform.position.y > swarmManager.boundsRejection[indexI].center.y)
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.up), rotationSpeed * Time.deltaTime);
@@ -289,7 +293,6 @@ public class FishAgent : MonoBehaviour
     {
         if (distanceToObstacle < swarmManager.rejections[indexI].dectectionRayValue && distanceToObstacle >= 0)
         {
-            Debug.LogError("hai");
             if (transform.position.x > swarmManager.boundsRejection[indexI].center.x)
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), rotationSpeed * Time.deltaTime);
@@ -311,5 +314,31 @@ public class FishAgent : MonoBehaviour
             }
         }
     }
+
+    private void RejectionDetectionX()
+    {
+        direction = swarmManager.goalPos - this.transform.position;
+        Ray rayForward = new Ray(transform.position, Vector3.right);
+        float distanceToObstacle = Mathf.Infinity;
+
+        for (int i = 0; i < swarmManager.rejections.Capacity; i++)
+        {
+            if (swarmManager.rejections[i].rejectionObjectCollider.bounds.IntersectRay(rayForward, out distanceToObstacle))
+            {
+                float speed = swarmManager.rejections[i].speed;
+                RejectionMoveRightLeft(i, distanceToObstacle, speed);
+                RejectionMoveUpDown(i, distanceToObstacle, speed);
+                if (swarmManager.rejections[i].UpDown == true)
+                {
+                    //RejectionMoveUpDown(i, distanceToObstacle, speed);
+                }
+                else
+                {
+                  // RejectionMoveRightLeft(i, distanceToObstacle, speed);
+                }
+            }
+        }
+    }
+
 }
 

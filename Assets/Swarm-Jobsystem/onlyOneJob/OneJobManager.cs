@@ -146,6 +146,8 @@ public class OneJobManager : MonoBehaviour
             arrayObject.rejectionMinSpeed = rejectionObjects[i].rejectionMinSpeed;
             arrayObject.rejectionMaxSpeed = rejectionObjects[i].rejectionMaxSpeed;
             arrayObject.dectectionRayValue = rejectionObjects[i].dectectionRayValue;
+            arrayObject.UpDown = rejectionObjects[i].UpDown;
+            
 
             newArray[i] = arrayObject;
         }

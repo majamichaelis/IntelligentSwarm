@@ -17,6 +17,10 @@ public class SwarmManagerBurst : MonoBehaviour
     [HideInInspector] public Vector3 goalPos;
     private NativeArray<Bounds> boundsArray;
 
+    private NativeArray<RejectionObjectBounds> RejectionsBoundsNativeArray;
+    public List<RejectionObjectCollider> rejectionsColliderList;
+
+
     [Range(0.0f, 5.0f)]
     public float minSpeed;
     [Range(0.0f, 5.0f)]
@@ -41,6 +45,7 @@ public class SwarmManagerBurst : MonoBehaviour
         transforms.Dispose();
         boundsArray.Dispose();
         fishPositions.Dispose();
+        RejectionsBoundsNativeArray.Dispose();
     }
 
     // Start is called before the first frame update
@@ -60,6 +65,8 @@ public class SwarmManagerBurst : MonoBehaviour
         }
         goalPos = goalObject.transform.position;
         boundsArray = getColliderNativeArray(Obstacles);
+        RejectionsBoundsNativeArray = FillRejectionsArray(rejectionsColliderList);
+
     }
 
     // Update is called once per frame
@@ -68,13 +75,6 @@ public class SwarmManagerBurst : MonoBehaviour
         float time = Time.deltaTime;
         GetAllPositions();
 
-        foreach(Bounds b in boundsArray)
-            Debug.LogError(b.Contains(fishPositions.ElementAt(0)));
-
-        if (Random.Range(0, 100) < 10)
-        {
-           //goalPos = this.transform.position + new Vector3(Random.Range(-swimLimits.x, swimLimits.x), Random.Range(0, swimLimits.y), Random.Range(-swimLimits.z, swimLimits.z));
-        }
         goalPos = goalObject.transform.position;
         float randomSpeed = Random.Range(minSpeed, maxSpeed);
 
@@ -121,7 +121,8 @@ public class SwarmManagerBurst : MonoBehaviour
             swarmManagerGoalpos = goalPos,
             speed = randomSpeed,
             positions = fishPositions,
-            deltaTime = time
+            deltaTime = time,
+            boundsObstacles = boundsArray
         };
 
         //schedule second job
@@ -140,16 +141,56 @@ public class SwarmManagerBurst : MonoBehaviour
         {
             fishPositions.Add(allfish[i].transform.position);
         }
-    }  
-
-    public NativeArray<Bounds> getColliderNativeArray(List<Collider> obstacles)
-    {
-        NativeArray<Bounds> boundsArray = new NativeArray<Bounds>(Obstacles.Count, Allocator.TempJob);
-
-            for(int i = 0; i< boundsArray.Length; i++)
-            {
-                boundsArray[i] = obstacles[i].bounds;
-            }
-        return boundsArray;
     }
+
+    private NativeArray<Bounds> getColliderNativeArray(List<Collider> obstacles)
+    {
+        NativeArray<Bounds> newArray = new NativeArray<Bounds>(obstacles.Count, Allocator.Persistent);
+
+        for (int i = 0; i < newArray.Length; i++)
+        {
+            newArray[i] = obstacles[i].bounds;
+        }
+        return newArray;
+    }
+
+    private NativeArray<RejectionObjectBounds> FillRejectionsArray(List<RejectionObjectCollider> rejectionObjects)
+    {
+        NativeArray<RejectionObjectBounds> newArray = new NativeArray<RejectionObjectBounds>(rejectionObjects.Count, Allocator.Persistent);
+
+        for (int i = 0; i < newArray.Length; i++)
+        {
+            RejectionObjectBounds arrayObject = new RejectionObjectBounds();
+            arrayObject.rejectionObjectBounds = rejectionObjects[i].rejectionObjectCollider.bounds;
+            arrayObject.rejectionMinSpeed = rejectionObjects[i].rejectionMinSpeed;
+            arrayObject.rejectionMaxSpeed = rejectionObjects[i].rejectionMaxSpeed;
+            arrayObject.dectectionRayValue = rejectionObjects[i].dectectionRayValue;
+            arrayObject.UpDown = rejectionObjects[i].UpDown;
+
+
+            newArray[i] = arrayObject;
+        }
+        return newArray;
+    }
+
+
+    [System.Serializable]
+    public struct RejectionObjectCollider
+    {
+        public Collider rejectionObjectCollider;
+        public float dectectionRayValue;
+        public float rejectionMaxSpeed;
+        public float rejectionMinSpeed;
+        public bool UpDown;
+    }
+
+    public struct RejectionObjectBounds
+    {
+        public Bounds rejectionObjectBounds;
+        public float dectectionRayValue;
+        public float rejectionMaxSpeed;
+        public float rejectionMinSpeed;
+        public bool UpDown;
+    }
+
 }

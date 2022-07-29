@@ -714,12 +714,12 @@ MonoBehaviour:
   - rejectionObjectCollider: {fileID: 709438127}
     dectectionRayValue: 3
     speed: 1
-    UpDown: 1
+    UpDown: 0
   swimLimits: {x: 5, y: 1, z: 5}
   goalPos: {x: 0, y: 0, z: 0}
   minSpeed: 0.07
   maxSpeed: 0.69
-  neighbourDistance: 14.49
+  neighbourDistance: 10.45
   rotationSpeed: 0.89
   AvoidValue: 0.35
 --- !u!1 &879697190
