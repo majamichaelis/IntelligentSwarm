@@ -13,11 +13,13 @@ public class OneJobManager : MonoBehaviour
     private NativeArray<Bounds> obstacleArray;
     private NativeArray<RejectionObjectBounds> RejectionsBoundsNativeArray;
     public List<RejectionObjectCollider> rejectionsColliderList;
+    public List<GameObject> rejectionObjects;
 
     public int numFish = 20;
     [HideInInspector]
     public GameObject[] allfish;
     public NativeList<Vector3> fishPositions;
+    public NativeList<Vector3> rejectionPositions;
     public Vector3 swimLimits = new Vector3(3, 3, 3);
 
     [HideInInspector]
@@ -64,6 +66,7 @@ public class OneJobManager : MonoBehaviour
         fishPositions.Dispose();
         obstacleArray.Dispose();
         RejectionsBoundsNativeArray.Dispose();
+        rejectionPositions.Dispose();
     }
 
     // Start is called before the first frame update
@@ -84,11 +87,14 @@ public class OneJobManager : MonoBehaviour
             fishPositions.Add(allfish[i].transform.position);
         }
         goalPos = goalGameobject.transform.position;
+        rejectionPositions = new NativeList<Vector3>(Allocator.TempJob);
+        rejectionObjects.ForEach(i => rejectionPositions.Add(i.transform.position));
     }
 
     // Update is called once per frame
     void Update()
     {
+        RejectionsBoundsNativeArray = FillRejectionsArray(rejectionsColliderList);
         goalPos = goalGameobject.transform.position;
         float time = Time.deltaTime;
         jobHandle.Complete();
@@ -104,6 +110,7 @@ public class OneJobManager : MonoBehaviour
 
             boundsObstacles = obstacleArray,
             rejectionObjects = RejectionsBoundsNativeArray,
+          //  rejections = rejectionPositions,
            
             speed = randomSpeed,
             positions = fishPositions,
@@ -122,6 +129,8 @@ public class OneJobManager : MonoBehaviour
         {
             fishPositions.Add(allfish[i].transform.position);
         }
+        rejectionPositions = new NativeList<Vector3>(Allocator.TempJob);
+        rejectionObjects.ForEach(i => rejectionPositions.Add(i.transform.position));
     }
 
     private NativeArray<Bounds> getColliderNativeArray(List<Collider> obstacles)

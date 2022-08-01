@@ -701,7 +701,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishprefab: {fileID: 4882801322305221464, guid: c87fa0d6180121d42a09aff518a98e33, type: 3}
   goalObject: {fileID: 403986787}
-  numFish: 100
+  numFish: 60
   allfish: []
   Obstacles:
   - {fileID: 2145957886}

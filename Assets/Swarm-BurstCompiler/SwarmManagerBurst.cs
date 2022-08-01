@@ -16,7 +16,7 @@ public class SwarmManagerBurst : MonoBehaviour
     public Vector3 swimLimits = new Vector3(3, 3, 3);
     [HideInInspector] public Vector3 goalPos;
     private NativeArray<Bounds> boundsArray;
-
+                 
     private NativeArray<RejectionObjectBounds> RejectionsBoundsNativeArray;
     public List<RejectionObjectCollider> rejectionsColliderList;
 

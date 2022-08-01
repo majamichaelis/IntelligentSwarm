@@ -653,10 +653,11 @@ MonoBehaviour:
   - {fileID: 72645859}
   rejectionsColliderList:
   - rejectionObjectCollider: {fileID: 1212331711}
-    dectectionRayValue: 0.5
-    rejectionMaxSpeed: 5
-    rejectionMinSpeed: 8
-    UpDown: 0
+    dectectionRayValue: 4
+    rejectionMaxSpeed: 0.3
+    rejectionMinSpeed: 1.5
+  rejectionObjects:
+  - {fileID: 963929048}
   numFish: 150
   allfish: []
   swimLimits: {x: 5, y: 1, z: 5}
@@ -664,7 +665,7 @@ MonoBehaviour:
   minSpeed: 0.15
   maxSpeed: 1.13
   neighbourDistance: 2.93
-  rotationSpeed: 0.99
+  rotationSpeed: 0.65
   AvoidValue: 0.34
 --- !u!1 &963194225
 GameObject:

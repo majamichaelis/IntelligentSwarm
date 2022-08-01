@@ -293,6 +293,7 @@ public class FishAgent : MonoBehaviour
     {
         if (distanceToObstacle < swarmManager.rejections[indexI].dectectionRayValue && distanceToObstacle >= 0)
         {
+            Debug.LogError(distanceToObstacle);
             if (transform.position.x > swarmManager.boundsRejection[indexI].center.x)
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), rotationSpeed * Time.deltaTime);
