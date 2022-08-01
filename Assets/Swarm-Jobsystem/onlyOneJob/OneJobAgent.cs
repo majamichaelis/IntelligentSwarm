@@ -121,14 +121,14 @@ public struct OneJobAgent : IJobParallelForTransform
         {
             if (rejectionObjects[i].rejectionObjectBounds.IntersectRay(rayForward, out distanceToObstacle))
             {
-                if (rejectionObjects[i].UpDown == true)
-                {
-                    RejectionMoveUpDown(transform, i, distanceToObstacle);
-                }
-                else
-                {
+               // if (rejectionObjects[i].UpDown == true)
+               //{
+               //    RejectionMoveUpDown(transform, i, distanceToObstacle);
+               // }
+               //else
+               //{
                     RejectionMoveRightLeft(transform, i, distanceToObstacle);
-                }
+                //}
             }
         }
     }
@@ -197,14 +197,14 @@ public struct OneJobAgent : IJobParallelForTransform
         {
             if (rejectionObjects[i].rejectionObjectBounds.IntersectRay(rayForward, out distanceToObstacle))
             {
-                if (rejectionObjects[i].UpDown == true)
-                {
-                    RejectionMoveUpDown(transform, i, distanceToObstacle);
-                }
-                else
-                {
+                //if (rejectionObjects[i].UpDown == true)
+                //{
+                    //RejectionMoveUpDown(transform, i, distanceToObstacle);
+               // }
+               // else
+               // {
                     RejectionMoveRightLeft(transform, i, distanceToObstacle);
-                }
+                //}
             }
         }
     }

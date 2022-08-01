@@ -45,7 +45,7 @@ public class OneJobManager : MonoBehaviour
         public float dectectionRayValue;
         public float rejectionMaxSpeed;
         public float rejectionMinSpeed;
-        public bool UpDown;
+        //public bool UpDown;
     }
 
     public struct RejectionObjectBounds
@@ -54,7 +54,7 @@ public class OneJobManager : MonoBehaviour
         public float dectectionRayValue;
         public float rejectionMaxSpeed;
         public float rejectionMinSpeed;
-        public bool UpDown;
+        //public bool UpDown;
     }
 
     private void OnDisable()
@@ -146,7 +146,7 @@ public class OneJobManager : MonoBehaviour
             arrayObject.rejectionMinSpeed = rejectionObjects[i].rejectionMinSpeed;
             arrayObject.rejectionMaxSpeed = rejectionObjects[i].rejectionMaxSpeed;
             arrayObject.dectectionRayValue = rejectionObjects[i].dectectionRayValue;
-            arrayObject.UpDown = rejectionObjects[i].UpDown;
+            //arrayObject.UpDown = rejectionObjects[i].UpDown;
             
 
             newArray[i] = arrayObject;
