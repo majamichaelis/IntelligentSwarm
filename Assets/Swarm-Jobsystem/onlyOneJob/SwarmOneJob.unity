@@ -646,26 +646,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 022452a57f190494aa87e0b4ebbf0b5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fishprefab: {fileID: 4882801322305221464, guid: 3f68ded242788424381c42727b60b163, type: 3}
-  goalGameobject: {fileID: 1066249466}
+  allfish: []
+  Fishprefab: {fileID: 4882801322305221464, guid: 3f68ded242788424381c42727b60b163, type: 3}
+  GoalGameobject: {fileID: 1066249466}
+  SwimLimits: {x: 3, y: 3, z: 3}
+  NumFish: 150
   Obstacles:
   - {fileID: 2145957886}
   - {fileID: 72645859}
-  rejectionsColliderList:
+  RejectionsColliderList:
   - rejectionObjectCollider: {fileID: 1212331711}
-    dectectionRayValue: 4
-    rejectionMaxSpeed: 0.3
-    rejectionMinSpeed: 1.5
-  rejectionObjects:
-  - {fileID: 963929048}
-  numFish: 150
-  allfish: []
-  swimLimits: {x: 5, y: 1, z: 5}
-  goalPos: {x: 0, y: 0, z: 0}
-  minSpeed: 0.15
-  maxSpeed: 1.13
-  neighbourDistance: 2.93
-  rotationSpeed: 0.65
+    dectectionRayValue: 3
+    rejectionMaxSpeed: 0.4
+    rejectionMinSpeed: 2
+  GoalPos: {x: 0, y: 0, z: 0}
+  MinSpeed: 0.43
+  MaxSpeed: 1.69
+  NeighbourDistance: 13.31
+  RotationSpeed: 1.17
   AvoidValue: 0.34
 --- !u!1 &963194225
 GameObject:
@@ -750,24 +748,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!1 &963929048 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 911646114083385234, guid: 83771cafb7de3bb4c8065c4eefbe776c, type: 3}
-  m_PrefabInstance: {fileID: 1212331710}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &963929049
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963929048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bef18f4cb098cca4c9c58624b6a3ac4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 0
 --- !u!1 &1066249466 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8467198488901995582, guid: 2561ccadfe7bf064dbaf6c818ed6b68b, type: 3}

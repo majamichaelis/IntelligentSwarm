@@ -8,37 +8,35 @@ using UnityEngine.Jobs;
 public class OneJobManager : MonoBehaviour
 {
     [HideInInspector] public GameObject[] allfish;
-    public GameObject fishprefab;
-    public GameObject goalGameobject;
-    public Vector3 swimLimits = new Vector3(3, 3, 3);
-    public int numFish = 20;
+    public GameObject Fishprefab;
+    public GameObject GoalGameobject;
+    public Vector3 SwimLimits = new Vector3(3, 3, 3);
+    public int NumFish = 20;
 
     public List<Collider> Obstacles;
-    public List<RejectionObjectCollider> rejectionsColliderList;
-    public List<GameObject> rejectionObjects;
+    public List<RejectionObjectCollider> RejectionsColliderList;
 
-    private NativeList<Vector3> fishPositions;
-    private NativeList<Vector3> rejectionPositions;
-    private NativeArray<Bounds> obstacleArray;
-    private NativeArray<RejectionObjectBounds> RejectionsBoundsNativeArray;
+    private NativeList<Vector3> _fishPositions;
+    private NativeArray<Bounds> _obstacleArray;
+    private NativeArray<RejectionObjectBounds> _rejectionsBoundsNativeArray;
 
     [HideInInspector]
-    public Vector3 goalPos;
+    public Vector3 GoalPos;
 
     [Range(0.0f, 5.0f)]
-    public float minSpeed;
+    public float MinSpeed;
     [Range(0.0f, 5.0f)]
-    public float maxSpeed;
+    public float MaxSpeed;
     [Range(0.0f, 20.0f)]
-    public float neighbourDistance;
+    public float NeighbourDistance;
     [Range(0.1f, 5.0f)]
-    public float rotationSpeed;
+    public float RotationSpeed;
     [Range(0.1f, 5.0f)]
     public float AvoidValue;
 
-    private TransformAccessArray transforms;
-    private OneJobAgent jobFishAgent;
-    private JobHandle jobHandle;
+    private TransformAccessArray _transforms;
+    private OneJobAgent _jobFishAgent;
+    private JobHandle _jobHandle;
 
     [System.Serializable]
     public struct RejectionObjectCollider
@@ -59,79 +57,73 @@ public class OneJobManager : MonoBehaviour
 
     private void OnDisable()
     {
-        jobHandle.Complete();
+        _jobHandle.Complete();
 
-        transforms.Dispose();
-        fishPositions.Dispose();
-        obstacleArray.Dispose();
-        RejectionsBoundsNativeArray.Dispose();
-        rejectionPositions.Dispose();
+        _transforms.Dispose();
+        _fishPositions.Dispose();
+        _obstacleArray.Dispose();
+        _rejectionsBoundsNativeArray.Dispose();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        transforms = new TransformAccessArray(0, -1);
-        obstacleArray = getColliderNativeArray(Obstacles);
-        RejectionsBoundsNativeArray = FillRejectionsArray(rejectionsColliderList);
+        _transforms = new TransformAccessArray(0, -1);
+        _obstacleArray = GetColliderNativeArray(Obstacles);
+        _rejectionsBoundsNativeArray = FillRejectionsArray(RejectionsColliderList);
 
-        allfish = new GameObject[numFish];
-        fishPositions = new NativeList<Vector3>(Allocator.TempJob);
-        transforms.capacity = transforms.length + numFish;
-        for (int i = 0; i < numFish; i++)
+        allfish = new GameObject[NumFish];
+        _fishPositions = new NativeList<Vector3>(Allocator.TempJob);
+        _transforms.capacity = _transforms.length + NumFish;
+        for (int i = 0; i < NumFish; i++)
         {
-            Vector3 pos = this.transform.position + new Vector3(Random.Range(-swimLimits.x, swimLimits.x), Random.Range(-swimLimits.y, swimLimits.y), Random.Range(-swimLimits.z, swimLimits.z));
-            allfish[i] = (GameObject)Instantiate(fishprefab, pos, Quaternion.identity);
-            transforms.Add(allfish[i].transform);
-            fishPositions.Add(allfish[i].transform.position);
+            Vector3 pos = this.transform.position + new Vector3(Random.Range(-SwimLimits.x, SwimLimits.x), Random.Range(-SwimLimits.y, SwimLimits.y), Random.Range(-SwimLimits.z, SwimLimits.z));
+            allfish[i] = (GameObject)Instantiate(Fishprefab, pos, Quaternion.identity);
+            _transforms.Add(allfish[i].transform);
+            _fishPositions.Add(allfish[i].transform.position);
         }
-        goalPos = goalGameobject.transform.position;
-
-        rejectionPositions = new NativeList<Vector3>(Allocator.TempJob);
-        rejectionObjects.ForEach(i => rejectionPositions.Add(i.transform.position));
+        GoalPos = GoalGameobject.transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        jobHandle.Complete();
+        _jobHandle.Complete();
         GetAllPositions();
 
-        RejectionsBoundsNativeArray = FillRejectionsArray(rejectionsColliderList);
-        goalPos = goalGameobject.transform.position;
+        _rejectionsBoundsNativeArray = FillRejectionsArray(RejectionsColliderList);
+        GoalPos = GoalGameobject.transform.position;
         float time = Time.deltaTime;
-        float randomSpeed = Random.Range(minSpeed, maxSpeed);
+        float randomSpeed = Random.Range(MinSpeed, MaxSpeed);
 
-        jobFishAgent = new OneJobAgent()
+        _jobFishAgent = new OneJobAgent()
         {
-            swarmManagerRotationSpeed = rotationSpeed,
-            swarmManagerAvoidValue = AvoidValue,
-            swarmManagerNeighbourDistance = neighbourDistance,
-            swarmManagerGoalpos = goalPos,
+            SwarmManagerRotationSpeed = RotationSpeed,
+            SwarmManagerAvoidValue = AvoidValue,
+            SwarmManagerNeighbourDistance = NeighbourDistance,
+            SwarmManagerGoalpos = GoalPos,
 
-            boundsObstacles = obstacleArray,
-            rejectionObjects = RejectionsBoundsNativeArray,
+            BoundsObstacles = _obstacleArray,
+            RejectionObjects = _rejectionsBoundsNativeArray,
            
-            speed = randomSpeed,
-            positions = fishPositions,
-            deltaTime = time
+            Speed = randomSpeed,
+            Positions = _fishPositions,
+            DeltaTime = time
         };
-        jobHandle = jobFishAgent.Schedule(transforms);
+        _jobHandle = _jobFishAgent.Schedule(_transforms);
     }
 
     private void GetAllPositions()
     {
-        fishPositions.Dispose();
-        fishPositions = new NativeList<Vector3>(Allocator.TempJob);
-        for (int i = 0; i < numFish; i++)
+        _fishPositions.Dispose();
+        _fishPositions = new NativeList<Vector3>(Allocator.TempJob);
+        for (int i = 0; i < NumFish; i++)
         {
-            fishPositions.Add(allfish[i].transform.position);
+            _fishPositions.Add(allfish[i].transform.position);
         }
-        rejectionPositions = new NativeList<Vector3>(Allocator.TempJob);
-        rejectionObjects.ForEach(i => rejectionPositions.Add(i.transform.position));
     }
 
-    private NativeArray<Bounds> getColliderNativeArray(List<Collider> obstacles)
+    private NativeArray<Bounds> GetColliderNativeArray(List<Collider> obstacles)
     {
         NativeArray<Bounds> newArray = new NativeArray<Bounds>(obstacles.Count, Allocator.Persistent);
 
