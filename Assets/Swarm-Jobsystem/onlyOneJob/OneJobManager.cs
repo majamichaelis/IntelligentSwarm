@@ -42,7 +42,7 @@ public class OneJobManager : MonoBehaviour
     public struct RejectionObjectCollider
     {
         public Collider rejectionObjectCollider;
-        public float dectectionRayValue;
+        public float dectectionValue;
         public float rejectionMaxSpeed;
         public float rejectionMinSpeed;
     }
@@ -50,7 +50,7 @@ public class OneJobManager : MonoBehaviour
     public struct RejectionObjectBounds
     {
         public Bounds rejectionObjectBounds;
-        public float dectectionRayValue;
+        public float dectectionValue;
         public float rejectionMaxSpeed;
         public float rejectionMinSpeed;
     }
@@ -144,7 +144,7 @@ public class OneJobManager : MonoBehaviour
             arrayObject.rejectionObjectBounds = rejectionObjects[i].rejectionObjectCollider.bounds;
             arrayObject.rejectionMinSpeed = rejectionObjects[i].rejectionMinSpeed;
             arrayObject.rejectionMaxSpeed = rejectionObjects[i].rejectionMaxSpeed;
-            arrayObject.dectectionRayValue = rejectionObjects[i].dectectionRayValue;
+            arrayObject.dectectionValue = rejectionObjects[i].dectectionValue;
           
             newArray[i] = arrayObject;
         }

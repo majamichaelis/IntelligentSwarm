@@ -116,12 +116,12 @@ public struct OneJobAgent : IJobParallelForTransform
 
     private void RejectionMoveRightLeft(TransformAccess transform, int indexI, float distanceToObstacle)
     {
-        float rotationSpeed = RemapValue(Mathf.Abs(distanceToObstacle), 0, RejectionObjects[indexI].dectectionRayValue, RejectionObjects[indexI].rejectionMinSpeed, RejectionObjects[indexI].rejectionMaxSpeed);
+        float rotationSpeed = RemapValue(Mathf.Abs(distanceToObstacle), 0, RejectionObjects[indexI].dectectionValue, RejectionObjects[indexI].rejectionMinSpeed, RejectionObjects[indexI].rejectionMaxSpeed);
 
-        if(!(Mathf.Abs(distanceToObstacle) <= RejectionObjects[indexI].dectectionRayValue))
+        if(!(Mathf.Abs(distanceToObstacle) <= RejectionObjects[indexI].dectectionValue))
             return; 
 
-        if (distanceToObstacle < RejectionObjects[indexI].dectectionRayValue && distanceToObstacle >= 0)
+        if (distanceToObstacle < RejectionObjects[indexI].dectectionValue && distanceToObstacle >= 0)
         {
             if (transform.position.x > RejectionObjects[indexI].rejectionObjectBounds.center.x)
             {
