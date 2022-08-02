@@ -7,20 +7,20 @@ using UnityEngine.Jobs;
 
 public class OneJobManager : MonoBehaviour
 {
+    [HideInInspector] public GameObject[] allfish;
     public GameObject fishprefab;
     public GameObject goalGameobject;
+    public Vector3 swimLimits = new Vector3(3, 3, 3);
+    public int numFish = 20;
+
     public List<Collider> Obstacles;
-    private NativeArray<Bounds> obstacleArray;
-    private NativeArray<RejectionObjectBounds> RejectionsBoundsNativeArray;
     public List<RejectionObjectCollider> rejectionsColliderList;
     public List<GameObject> rejectionObjects;
 
-    public int numFish = 20;
-    [HideInInspector]
-    public GameObject[] allfish;
-    public NativeList<Vector3> fishPositions;
-    public NativeList<Vector3> rejectionPositions;
-    public Vector3 swimLimits = new Vector3(3, 3, 3);
+    private NativeList<Vector3> fishPositions;
+    private NativeList<Vector3> rejectionPositions;
+    private NativeArray<Bounds> obstacleArray;
+    private NativeArray<RejectionObjectBounds> RejectionsBoundsNativeArray;
 
     [HideInInspector]
     public Vector3 goalPos;
@@ -36,9 +36,9 @@ public class OneJobManager : MonoBehaviour
     [Range(0.1f, 5.0f)]
     public float AvoidValue;
 
-    TransformAccessArray transforms;
-    OneJobAgent jobFishAgent;
-    JobHandle jobHandle;
+    private TransformAccessArray transforms;
+    private OneJobAgent jobFishAgent;
+    private JobHandle jobHandle;
 
     [System.Serializable]
     public struct RejectionObjectCollider
@@ -47,7 +47,6 @@ public class OneJobManager : MonoBehaviour
         public float dectectionRayValue;
         public float rejectionMaxSpeed;
         public float rejectionMinSpeed;
-        //public bool UpDown;
     }
 
     public struct RejectionObjectBounds
@@ -56,12 +55,12 @@ public class OneJobManager : MonoBehaviour
         public float dectectionRayValue;
         public float rejectionMaxSpeed;
         public float rejectionMinSpeed;
-        //public bool UpDown;
     }
 
     private void OnDisable()
     {
         jobHandle.Complete();
+
         transforms.Dispose();
         fishPositions.Dispose();
         obstacleArray.Dispose();
@@ -87,6 +86,7 @@ public class OneJobManager : MonoBehaviour
             fishPositions.Add(allfish[i].transform.position);
         }
         goalPos = goalGameobject.transform.position;
+
         rejectionPositions = new NativeList<Vector3>(Allocator.TempJob);
         rejectionObjects.ForEach(i => rejectionPositions.Add(i.transform.position));
     }
@@ -94,13 +94,14 @@ public class OneJobManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        jobHandle.Complete();
+        GetAllPositions();
+
         RejectionsBoundsNativeArray = FillRejectionsArray(rejectionsColliderList);
         goalPos = goalGameobject.transform.position;
         float time = Time.deltaTime;
-        jobHandle.Complete();
-        GetAllPositions();
-       
         float randomSpeed = Random.Range(minSpeed, maxSpeed);
+
         jobFishAgent = new OneJobAgent()
         {
             swarmManagerRotationSpeed = rotationSpeed,
@@ -110,17 +111,14 @@ public class OneJobManager : MonoBehaviour
 
             boundsObstacles = obstacleArray,
             rejectionObjects = RejectionsBoundsNativeArray,
-          //  rejections = rejectionPositions,
            
             speed = randomSpeed,
             positions = fishPositions,
             deltaTime = time
         };
         jobHandle = jobFishAgent.Schedule(transforms);
-
-        //JobHandle.CompleteAll(ref jobHandle);
-        //jobHandle.Complete();
     }
+
     private void GetAllPositions()
     {
         fishPositions.Dispose();
@@ -155,13 +153,9 @@ public class OneJobManager : MonoBehaviour
             arrayObject.rejectionMinSpeed = rejectionObjects[i].rejectionMinSpeed;
             arrayObject.rejectionMaxSpeed = rejectionObjects[i].rejectionMaxSpeed;
             arrayObject.dectectionRayValue = rejectionObjects[i].dectectionRayValue;
-            //arrayObject.UpDown = rejectionObjects[i].UpDown;
-            
-
+          
             newArray[i] = arrayObject;
         }
         return newArray;
     }
-
-
 }

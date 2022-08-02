@@ -20,15 +20,10 @@ public struct OneJobAgent : IJobParallelForTransform
     [ReadOnly] public Vector3 swarmManagerPosition;
     [ReadOnly] public Vector3 swarmManagerSwimLimits;
     [ReadOnly] public NativeArray<RejectionObjectBounds> rejectionObjects;
-    //[ReadOnly] public NativeArray<Vector3> rejections;
 
 
     public void Execute(int index, TransformAccess transform)
     {
-        Vector3 direction = swarmManagerGoalpos - transform.position;
-
-        //RejectionDetectionZ(transform);
-        //RejectionDetectionX(transform);
         ApplyRules(transform);
 
         if (inObstacle(transform.position))
@@ -41,7 +36,6 @@ public struct OneJobAgent : IJobParallelForTransform
             else
                 directionValue = -1f;
 
-            //maxspeed
             Vector3 newPosition = Vector3.Slerp(transform.position, new Vector3(transform.position.x, transform.position.y, (transform.position.z + 3f) * directionValue), deltaTime * speed);
             if (!inObstacle(newPosition))
                 transform.position = newPosition;
@@ -55,10 +49,6 @@ public struct OneJobAgent : IJobParallelForTransform
         {
             transform.position += deltaTime * speed * (transform.rotation * new Vector3(0, 0, 1));
         }
-
-        //RejectionDetectionZ(transform);
-        //RejectionDetectionX(transform);
-
         RejectionZ(transform);
     }
 
@@ -87,16 +77,12 @@ public struct OneJobAgent : IJobParallelForTransform
                         //wegbewegen 
                         vavoid = vavoid + (transform.position - fishposition);
                     }
-                    //vielleicht neue zufällige Zeit?
-                    //FishAgent anotherFish = go.GetComponent<FishAgent>(); 
-                    //gSpeed = gSpeed + anotherFish.speed;
                 }
             }
         }
         if (groupSize > 0)
         {
             vcentre = vcentre / groupSize + (swarmManagerGoalpos - transform.position);
-            //speed = gSpeed / groupSize;
 
             Vector3 direction = (vcentre + vavoid) - transform.position;
 
@@ -193,24 +179,9 @@ public struct OneJobAgent : IJobParallelForTransform
 
         if(!(Mathf.Abs(distanceToObstacle) <= rejectionObjects[indexI].dectectionRayValue))
             return; 
-        //Abstand größer 0 
+
         if (distanceToObstacle < rejectionObjects[indexI].dectectionRayValue && distanceToObstacle >= 0)
         {
-            Debug.Log("größer");
-            if (transform.position.x > rejectionObjects[indexI].rejectionObjectBounds.center.x)
-            {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), rotationSpeed * deltaTime);
-            }
-            else
-            {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), rotationSpeed * deltaTime);
-            }
-        }
-        //Abstand kleiner 0 
-        else 
-        {
-            Debug.LogError("kleiner");
-
             if (transform.position.x > rejectionObjects[indexI].rejectionObjectBounds.center.x)
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), rotationSpeed * deltaTime);
