@@ -10,6 +10,7 @@ public class OneJobManager : MonoBehaviour
     [HideInInspector] public GameObject[] allfish;
     public GameObject Fishprefab;
     public GameObject GoalGameobject;
+    public Transform ParentTransform;
     public Vector3 SwimLimits = new Vector3(3, 3, 3);
     public int NumFish = 20;
 
@@ -79,6 +80,7 @@ public class OneJobManager : MonoBehaviour
         {
             Vector3 pos = this.transform.position + new Vector3(Random.Range(-SwimLimits.x, SwimLimits.x), Random.Range(-SwimLimits.y, SwimLimits.y), Random.Range(-SwimLimits.z, SwimLimits.z));
             allfish[i] = (GameObject)Instantiate(Fishprefab, pos, Quaternion.identity);
+            allfish[i].transform.SetParent(ParentTransform.transform);
             _transforms.Add(allfish[i].transform);
             _fishPositions.Add(allfish[i].transform.position);
         }
@@ -133,6 +135,7 @@ public class OneJobManager : MonoBehaviour
         }
         return newArray;
     }
+
 
     private NativeArray<RejectionObjectBounds> FillRejectionsArray(List<RejectionObjectCollider> rejectionObjects)
     {
